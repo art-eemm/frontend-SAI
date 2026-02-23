@@ -12,6 +12,8 @@ import {
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "../ui/sheet";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 type MenuItem = {
   name: string;
@@ -31,6 +33,8 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export default function Header() {
+  const pathname = usePathname();
+
   return (
     <header className="w-full bg-white relative">
       <div className="flex items-center justify-between lg:justify-center gap-2 px-6 py-4">
@@ -50,7 +54,11 @@ export default function Header() {
                     <Link
                       key={item.name}
                       href={item.route}
-                      className={navigationMenuTriggerStyle()}
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        pathname === item.route &&
+                          "bg-accent text-accent-foreground",
+                      )}
                     >
                       {item.name}
                     </Link>
@@ -90,7 +98,11 @@ export default function Header() {
               <NavigationMenuItem key={item.name}>
                 <NavigationMenuLink
                   asChild
-                  className={navigationMenuTriggerStyle()}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    pathname === item.route &&
+                      "bg-accent text-accent-foreground",
+                  )}
                 >
                   <Link href={item.route}>{item.name}</Link>
                 </NavigationMenuLink>
