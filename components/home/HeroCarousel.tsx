@@ -83,8 +83,8 @@ export default function HeroCarousel() {
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="hidden lg:flex left-4 text-white border-none bg-black/20 hover:white" />
-        <CarouselNext className="hidden lg:flex right-4 text-white border-none bg-black/20 hover:black/50" />
+        <CarouselPrevious className="hidden lg:flex left-4 text-white border-none bg-black/20 hover:white hover:cursor-pointer" />
+        <CarouselNext className="hidden lg:flex right-4 text-white border-none bg-black/20 hover:black/50 hover:cursor-pointer" />
       </Carousel>
     </section>
   );
