@@ -10,6 +10,7 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 import React from "react";
+import { getFormattedName } from "@/lib/utils";
 
 export function CustomBreadcrumbs() {
   const pathname = usePathname();
@@ -32,11 +33,11 @@ export function CustomBreadcrumbs() {
               <BreadcrumbItem>
                 {isLast ? (
                   <BreadcrumbPage className="capitalize">
-                    {segment}
+                    {getFormattedName(segment)}
                   </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink href={href} className="capitalize">
-                    {segment}
+                    {getFormattedName(segment)}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

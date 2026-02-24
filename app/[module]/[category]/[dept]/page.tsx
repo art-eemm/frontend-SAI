@@ -8,13 +8,28 @@ export default async function DepartmentPage({
   params: Promise<{ module: string; category: string; dept: string }>;
 }) {
   const { module, category, dept } = await params;
-
   const currentModuleConfig = APP_CONFIG[module.toLowerCase()];
-  const deptCode = dept.toUpperCase();
-  const departmentInfo = currentModuleConfig?.departments.find(
-    (d) => d.title === deptCode,
+  let categoryDepartments: { title: string; description: string }[] = [];
+
+  if (Array.isArray(currentModuleConfig?.departments)) {
+    categoryDepartments = currentModuleConfig.departments;
+  } else if (currentModuleConfig?.departments) {
+    categoryDepartments =
+      currentModuleConfig.departments[category.toLowerCase()] || [];
+  }
+
+  const normalize = (text: string) => text.toLowerCase().replace(/\s+/g, "-");
+  const departmentInfo = categoryDepartments?.find(
+    (d) => normalize(d.title) === dept.toLowerCase(),
   );
-  const fullTitle = departmentInfo ? departmentInfo.description : deptCode;
+
+  let fullTitle = dept.toUpperCase();
+  if (departmentInfo) {
+    fullTitle =
+      departmentInfo.title.length <= 3
+        ? departmentInfo.description
+        : departmentInfo.title;
+  }
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-10">
@@ -23,7 +38,7 @@ export default async function DepartmentPage({
         title={fullTitle}
         module={module}
         category={category}
-        department={deptCode}
+        department={dept}
       />
     </main>
   );

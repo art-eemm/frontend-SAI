@@ -1,48 +1,41 @@
 import OptionGrid from "@/components/shared/OptionGrid";
 import { CustomBreadcrumbs } from "@/components/shared/CustomBreadcrumbs";
+import { APP_CONFIG } from "@/lib/constants";
 
-const DATOS_DOCUMENTACION = [
-  {
-    title: "Manuales",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
-    href: "/documentacion/manuales",
-  },
-  {
-    title: "Procedimientos",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
-    href: "/documentacion/procedimientos",
-  },
-  {
-    title: "Instructivos",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
-    href: "/documentacion/instructivos",
-  },
-  {
-    title: "Formatos",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
-    href: "/documentacion/formatos",
-  },
-  {
-    title: "Complementarios",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
-    href: "/documentacion/complementarios",
-  },
-];
+export default async function ModulePage({
+  params,
+}: {
+  params: Promise<{ module: string }>;
+}) {
+  const resolvedParams = await params;
 
-export default function DocumentacionPage() {
+  const moduleSlug = resolvedParams.module.toLowerCase();
+  const currentModule = APP_CONFIG[moduleSlug];
+
+  if (!currentModule) {
+    return (
+      <main className="max-w-7xl mx-auto px-4 py-10">
+        <CustomBreadcrumbs />
+        <h1 className="text-2xl font-semibold text-gray-900 mb-8 capitalize">
+          {moduleSlug.replace(/-/g, "")}
+        </h1>
+        <div className="bg-white p-6 rounded-xl border border-gray-200">
+          <p className="text-gray-500">
+            Las opciones para este módulo aún no han sido configuradas.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="max-w-7xl mx-auto px-4 py-10">
       <CustomBreadcrumbs />
       <h1 className="text-2xl font-semibold text-gray-900 mb-8">
-        Documentación
+        {currentModule.title}
       </h1>
 
-      <OptionGrid options={DATOS_DOCUMENTACION} />
+      <OptionGrid options={currentModule.options} />
     </main>
   );
 }
