@@ -72,19 +72,23 @@ export default function Header() {
             </Sheet>
           </div>
 
-          <Image
-            src={"/images/logo.svg"}
-            alt="Logotipo de Propysol"
-            width={210}
-            height={60}
-            className="object-contain"
-            priority
-          />
+          <Link href={"/"}>
+            <Image
+              src={"/images/logo.svg"}
+              alt="Logotipo de Propysol"
+              width={210}
+              height={60}
+              className="object-contain"
+              priority
+            />
+          </Link>
         </div>
 
-        <h1 className="text-xl lg:text-2xl font-semibold tracking-wide text-gray-800 hidden md:block">
-          SISTEMA DE ADMINISTRACIÓN INTEGRAL
-        </h1>
+        <Link href={"/"}>
+          <h1 className="text-xl lg:text-2xl font-semibold tracking-wide text-gray-800 hidden md:block">
+            SISTEMA DE ADMINISTRACIÓN INTEGRAL
+          </h1>
+        </Link>
 
         <Button className="absolute hidden lg:block right-6 bg-gray-900 text-white hover:bg-gray-800">
           Iniciar sesión
