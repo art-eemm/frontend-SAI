@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
@@ -16,6 +19,14 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+
+const DocumentViewer = dynamic(
+  () => import("./DocumentViewer").then((mod) => mod.DocumentViewer),
+  {
+    ssr: false,
+  },
+);
 
 // Recibe los props para saber que datos pedir
 interface DocumentTableProps {
@@ -31,6 +42,10 @@ export default function DocumentTable({
   category,
   department,
 }: DocumentTableProps) {
+  const [selectedDoc, setSelectedDoc] = useState<{
+    url: string;
+    name: string;
+  } | null>(null);
   // fetch a la base de datos
   // const data = await fetchDocuments(module, category, department)
 
@@ -103,6 +118,12 @@ export default function DocumentTable({
                     size={"icon"}
                     className="text-gray-500 hover:text-gray-900"
                     title="Ver documento"
+                    onClick={() =>
+                      setSelectedDoc({
+                        url: "/SAI.pdf",
+                        name: "SAI",
+                      })
+                    }
                   >
                     <Eye className="h-5 w-5" />
                   </Button>
@@ -155,6 +176,13 @@ export default function DocumentTable({
           </div>
         </div>
       </div>
+
+      <DocumentViewer
+        isOpen={!!selectedDoc}
+        onClose={() => setSelectedDoc(null)}
+        documentUrl={selectedDoc?.url || null}
+        documentName={selectedDoc?.name || ""}
+      />
     </div>
   );
 }
