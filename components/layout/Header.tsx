@@ -35,6 +35,8 @@ const MENU_ITEMS: MenuItem[] = [
 export default function Header() {
   const pathname = usePathname();
 
+  if (pathname === "/login" || pathname === "/reset-password") return null;
+
   return (
     <header className="w-full bg-white relative">
       <div className="flex items-center justify-between lg:justify-center gap-2 px-6 py-4">
@@ -65,9 +67,11 @@ export default function Header() {
                   ))}
                 </nav>
 
-                <Button className="mt-auto mb-4 bg-gray-900 text-white hover:bg-gray-800">
-                  Iniciar sesión
-                </Button>
+                <Link href={"/login"} className="mt-auto w-full">
+                  <Button className="mt-auto w-full mb-4 bg-gray-900 text-white hover:bg-gray-800">
+                    Iniciar sesión
+                  </Button>
+                </Link>
               </SheetContent>
             </Sheet>
           </div>
@@ -90,9 +94,11 @@ export default function Header() {
           </h1>
         </Link>
 
-        <Button className="absolute hidden lg:block right-6 bg-gray-900 text-white hover:bg-gray-800">
-          Iniciar sesión
-        </Button>
+        <Link href={"/login"}>
+          <Button className="absolute hidden lg:block right-6 bg-gray-900 text-white hover:bg-gray-800">
+            Iniciar sesión
+          </Button>
+        </Link>
       </div>
 
       <div className="hidden lg:flex justify-center py-3 shadow-sm">
