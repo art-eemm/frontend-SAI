@@ -39,10 +39,10 @@ export default function Header() {
 
   return (
     <header className="w-full bg-white relative">
-      <div className="flex items-center justify-between lg:justify-center gap-2 px-6 py-4">
+      <div className="flex items-center justify-between gap-2 px-6 py-4">
         <div className="flex items-center gap-2">
           {/* Menu Movil */}
-          <div className="lg:hidden flex items-center">
+          <div className="lg:hidden flex items-center z-10">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant={"ghost"} size={"icon"}>
@@ -88,14 +88,16 @@ export default function Header() {
           </Link>
         </div>
 
-        <Link href={"/"}>
-          <h1 className="text-xl lg:text-2xl font-semibold tracking-wide text-gray-800 hidden md:block">
-            SISTEMA DE ADMINISTRACIÓN INTEGRAL
-          </h1>
-        </Link>
+        <div className="absolute left-1/2 -translate-x-1/2 hidden md:block z-0 text-right lg:text-center pr-6 lg:p-0 w-full">
+          <Link href={"/"}>
+            <h1 className="text-xl lg:text-2xl font-semibold tracking-wide text-gray-800 hidden md:block">
+              SISTEMA DE ADMINISTRACIÓN INTEGRAL
+            </h1>
+          </Link>
+        </div>
 
         <Link href={"/login"}>
-          <Button className="absolute hidden lg:block right-6 bg-gray-900 text-white hover:bg-gray-800">
+          <Button className="absolute hidden lg:block right-6 top-6 bg-gray-900 text-white hover:bg-gray-800">
             Iniciar sesión
           </Button>
         </Link>

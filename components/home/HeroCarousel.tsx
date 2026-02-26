@@ -48,7 +48,7 @@ const CAROUSEL_SLIDES = [
 
 export default function HeroCarousel() {
   return (
-    <section className="w-full max-w-7xl mx-auto px-4 py-6">
+    <section className="w-full max-w-lvw max-h-screen mx-auto px-2 lg:px-6 py-6">
       <Carousel
         className="w-full relative rounded-2xl overflow-hidden"
         opts={{
@@ -59,7 +59,7 @@ export default function HeroCarousel() {
         <CarouselContent>
           {CAROUSEL_SLIDES.map((slide) => (
             <CarouselItem key={slide.id}>
-              <div className="relative w-full h-125 md:h-150">
+              <div className="relative w-full h-125 lg:h-screen">
                 <Image
                   src={slide.image}
                   alt="Planta de Propysol"
