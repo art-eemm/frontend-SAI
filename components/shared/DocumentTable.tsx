@@ -28,26 +28,55 @@ const DocumentViewer = dynamic(
   },
 );
 
-// Recibe los props para saber que datos pedir
+// documento procesado
+export interface DocItem {
+  id: string;
+  procedencia: string;
+  nombre: string;
+  fechaRev: string;
+  revision: string;
+  tipo: string;
+  url: string;
+}
 interface DocumentTableProps {
   title: string;
-  module: string;
-  category: string;
-  department?: string;
+  data: DocItem[];
 }
 
 export default function DocumentTable({
   title,
-  module,
-  category,
-  department,
+  data = [],
 }: DocumentTableProps) {
   const [selectedDoc, setSelectedDoc] = useState<{
     url: string;
     name: string;
   } | null>(null);
-  // fetch a la base de datos
-  // const data = await fetchDocuments(module, category, department)
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const filteredData = data.filter((doc) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      doc.nombre.toLowerCase().includes(searchLower) ||
+      doc.procedencia.toLowerCase().includes(searchLower) ||
+      doc.tipo.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const totalItems = filteredData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+
+  const currentData = filteredData.slice(startIndex, endIndex);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="w-full">
@@ -60,6 +89,8 @@ export default function DocumentTable({
               type="text"
               placeholder="Buscar..."
               className="w-full bg-white"
+              value={searchTerm}
+              onChange={handleSearch}
             />
           </div>
           <Button
@@ -98,54 +129,80 @@ export default function DocumentTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {/* Aquí va el map para los documentos */}
-            <TableRow className="text-gray-600">
-              <TableCell className="px-6 py-4">procedencia</TableCell>
-              <TableCell className="px-6 py-4">nombre</TableCell>
-              <TableCell className="px-6 py-4 text-center">fecha</TableCell>
-              <TableCell className="px-6 py-4 text-center">revisión</TableCell>
-              <TableCell className="px-6 py-4">
-                <div className="flex justify-center">
-                  <span className="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    tipo
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell className="px-6 py-4">
-                <div className="flex justify-center">
-                  <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    className="text-gray-500 hover:text-gray-900"
-                    title="Ver documento"
-                    onClick={() =>
-                      setSelectedDoc({
-                        url: "/SAI.pdf",
-                        name: "SAI",
-                      })
-                    }
-                  >
-                    <Eye className="h-5 w-5" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
+            {currentData.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center py-8 text-gray-500"
+                >
+                  {searchTerm !== ""
+                    ? `No se encontraron resultados para "${searchTerm}".`
+                    : "No se encontraron documentos en esta sección."}
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.map((doc) => (
+                <TableRow key={doc.id} className="text-gray-600">
+                  <TableCell className="px-6 py-4 font-medium">
+                    {doc.procedencia}
+                  </TableCell>
+                  <TableCell className="px-6 py-4">{doc.nombre}</TableCell>
+                  <TableCell className="px-6 py-4 text-center">
+                    {new Date(doc.fechaRev).toLocaleDateString("es-MX")}
+                  </TableCell>
+                  <TableCell className="px-6 py-4 text-center">
+                    {doc.revision}
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    <div className="flex justify-center">
+                      <span className="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                        {doc.tipo}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-6 py-4">
+                    <div className="flex justify-center">
+                      <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="text-gray-500 hover:text-gray-900"
+                        title="Ver documento"
+                        onClick={() =>
+                          setSelectedDoc({
+                            url: doc.url || "/SAI.pdf",
+                            name: doc.nombre,
+                          })
+                        }
+                      >
+                        <Eye className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
 
       {/* Paginación */}
       <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-sm gap-4">
-        <div className="text-gray-500">Mostrando 1 - 4 de 4</div>
+        <div className="text-gray-500">
+          Mostrando {totalItems === 0 ? 0 : startIndex + 1} - {endIndex} de{" "}
+          {totalItems}
+        </div>
 
         <div className="flex items-center gap-4">
-          <span>Página 1 de 1</span>
+          <span>
+            Página {totalPages === 0 ? 0 : currentPage} de {totalPages}
+          </span>
           <div className="flex items-center gap-2">
             <Button
               variant={"outline"}
               size={"icon"}
               className="h-8 w-8 disabled:opacity-50"
-              disabled
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1 || totalPages === 0}
             >
               <ChevronsLeft className="h-4 w-4" />
             </Button>
@@ -153,7 +210,8 @@ export default function DocumentTable({
               variant={"outline"}
               size={"icon"}
               className="h-8 w-8 disabled:opacity-50"
-              disabled
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1 || totalPages === 0}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -161,7 +219,10 @@ export default function DocumentTable({
               variant={"outline"}
               size={"icon"}
               className="h-8 w-8 disabled:opacity-50"
-              disabled
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages || totalPages === 0}
             >
               <ChevronsRight className="h-4 w-4" />
             </Button>
@@ -169,7 +230,8 @@ export default function DocumentTable({
               variant={"outline"}
               size={"icon"}
               className="h-8 w-8 disabled:opacity-50"
-              disabled
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages || totalPages === 0}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

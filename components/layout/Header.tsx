@@ -105,7 +105,7 @@ export default function Header() {
 
       <div className="hidden lg:flex justify-center py-3 shadow-sm">
         <NavigationMenu>
-          <NavigationMenuList className="flex gap-2">
+          <NavigationMenuList className="flex gap-1">
             {MENU_ITEMS.map((item) => (
               <NavigationMenuItem key={item.name}>
                 <NavigationMenuLink

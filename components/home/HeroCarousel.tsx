@@ -48,7 +48,7 @@ const CAROUSEL_SLIDES = [
 
 export default function HeroCarousel() {
   return (
-    <section className="w-full max-w-lvw max-h-screen mx-auto px-2 lg:px-6 py-6">
+    <section className="w-full mx-auto px-2 lg:px-6 py-6">
       <Carousel
         className="w-full relative rounded-2xl overflow-hidden"
         opts={{
@@ -59,7 +59,7 @@ export default function HeroCarousel() {
         <CarouselContent>
           {CAROUSEL_SLIDES.map((slide) => (
             <CarouselItem key={slide.id}>
-              <div className="relative w-full h-125 lg:h-screen">
+              <div className="relative w-full h-[calc(100vh-195px)] min-h-100">
                 <Image
                   src={slide.image}
                   alt="Planta de Propysol"
@@ -83,8 +83,8 @@ export default function HeroCarousel() {
           ))}
         </CarouselContent>
 
-        <CarouselPrevious className="hidden lg:flex left-4 text-white border-none bg-black/20 hover:white hover:cursor-pointer" />
-        <CarouselNext className="hidden lg:flex right-4 text-white border-none bg-black/20 hover:black/50 hover:cursor-pointer" />
+        <CarouselPrevious className="hidden lg:flex left-4 text-white border-none bg-black/20 hover:bg-white/20 hover:cursor-pointer" />
+        <CarouselNext className="hidden lg:flex right-4 text-white border-none bg-black/20 hover:bg-black/50 hover:cursor-pointer" />
       </Carousel>
     </section>
   );

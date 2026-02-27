@@ -1,4 +1,4 @@
-// type DepartmentItem = { title: string; description: string };
+import { ModuleConfig } from "./types";
 
 const DEPARTAMENTOS = [
   { title: "CCA", description: "Control de Calidad" },
@@ -69,20 +69,6 @@ const ASPECTOS_MA = [
       "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
   },
 ];
-export interface DepartmentItem {
-  title: string;
-  description: string;
-}
-
-export interface Option extends DepartmentItem {
-  href: string;
-}
-export interface ModuleConfig {
-  title: string;
-  options: Option[];
-  directCategories: string[];
-  departments: DepartmentItem[] | Record<string, DepartmentItem[]>;
-}
 
 export const APP_CONFIG: Record<string, ModuleConfig> = {
   documentacion: {
