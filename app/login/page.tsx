@@ -38,7 +38,7 @@ export default function LoginPage() {
       localStorage.setItem("sai_token", data.token);
       localStorage.setItem("sai_user", JSON.stringify(data.user));
 
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Ocurrió un error inseperado",

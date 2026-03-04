@@ -35,7 +35,12 @@ const MENU_ITEMS: MenuItem[] = [
 export default function Header() {
   const pathname = usePathname();
 
-  if (pathname === "/login" || pathname === "/reset-password") return null;
+  if (
+    pathname === "/login" ||
+    pathname === "/reset-password" ||
+    pathname.startsWith("/dashboard")
+  )
+    return null;
 
   return (
     <header className="w-full bg-white relative">
