@@ -31,30 +31,38 @@ const menuSections = [
     items: [
       {
         name: "Planeación estratégica",
-        route: "/planeacion",
+        route: "/dashboard/planeacion",
         icon: ClipboardList,
       },
-      { name: "Objetivos", route: "/objetivos", icon: Target },
-      { name: "Documentación", route: "/documentacion", icon: FileText },
-      { name: "Aspectos relevantes", route: "/aspectos", icon: Info },
+      { name: "Objetivos", route: "/dashboard/objetivos", icon: Target },
+      {
+        name: "Documentación",
+        route: "/dashboard/documentacion",
+        icon: FileText,
+      },
+      { name: "Aspectos relevantes", route: "/dashboard/aspectos", icon: Info },
       {
         name: "Indicadores de proceso",
-        route: "/indicadores",
+        route: "/dashboard/indicadores",
         icon: TrendingUp,
       },
       {
         name: "Estructura organizacional",
-        route: "/estructura",
+        route: "/dashboard/estructura",
         icon: Network,
       },
-      { name: "Programas", route: "/programas", icon: Folder },
-      { name: "Auditorias", route: "/auditorias", icon: FileSearch },
-      { name: "Comunicación", route: "/comunicacion", icon: MessageSquare },
+      { name: "Programas", route: "/dashboard/programas", icon: Folder },
+      { name: "Auditorias", route: "/dashboard/auditorias", icon: FileSearch },
+      {
+        name: "Comunicación",
+        route: "/dashboard/comunicacion",
+        icon: MessageSquare,
+      },
     ],
   },
   {
     label: "Revisiones",
-    items: [{ name: "Vencidos", route: "/vencidos", icon: XCircle }],
+    items: [{ name: "Vencidos", route: "/dashboard/vencidos", icon: XCircle }],
   },
 ];
 
@@ -102,7 +110,7 @@ export default function Sidebar() {
       <Link href={"/dashboard"}>
         <div className="flex items-center p-6 border-b border-gray-200">
           <Image
-            src={"images/DragonPropy_LightMode.svg"}
+            src={"/images/DragonPropy.svg"}
             alt="Logo SAI"
             width={80}
             height={40}

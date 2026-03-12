@@ -2,7 +2,15 @@ import { Bell, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import Sidebar from "../layout/Sidebar";
 
-export default function DashboardHeader() {
+type DashboardHeaderProps = {
+  title?: string;
+  description?: string;
+};
+
+export default function DashboardHeader({
+  title = "Inicio",
+  description = "Bienvenido al Sistema de Administración Integral",
+}: DashboardHeaderProps) {
   return (
     <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-6">
       <div className="flex items-start gap-3">
@@ -22,11 +30,9 @@ export default function DashboardHeader() {
 
         <div>
           <h1 className="text-md sm:text-lg font-semibold text-gray-900">
-            Inicio
+            {title}
           </h1>
-          <p className="text-xs md:text-sm text-gray-500 mt-1">
-            Bienvenido al Sistema de Administración Integral
-          </p>
+          <p className="text-xs md:text-sm text-gray-500 mt-1">{description}</p>
         </div>
       </div>
 

@@ -1,3 +1,5 @@
+import { ElementType } from "react";
+
 export interface ApiDocument {
   id: string;
   origin_code: string;
@@ -26,9 +28,12 @@ export interface DepartmentItem {
 
 export interface Option extends DepartmentItem {
   href: string;
+  icon?: ElementType;
+  count?: number;
 }
 export interface ModuleConfig {
   title: string;
+  description: string;
   options: Option[];
   directCategories: string[];
   departments: DepartmentItem[] | Record<string, DepartmentItem[]>;
