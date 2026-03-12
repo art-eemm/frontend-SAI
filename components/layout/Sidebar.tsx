@@ -98,7 +98,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-[280px] h-screen bg-gray-100 border-r border-gray-200 flex flex-col justify-between">
+    <aside className="w-70 h-screen bg-gray-100 border-r border-gray-200 flex flex-col justify-between">
       <Link href={"/dashboard"}>
         <div className="flex items-center p-6 border-b border-gray-200">
           <Image

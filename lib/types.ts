@@ -4,7 +4,7 @@ export interface ApiDocument {
   title: string;
   category: string;
   status: string;
-  expiration_date: string;
+  expiration_date: string | null;
   created_at: string;
   uploaded_by: string;
 }
@@ -32,4 +32,24 @@ export interface ModuleConfig {
   options: Option[];
   directCategories: string[];
   departments: DepartmentItem[] | Record<string, DepartmentItem[]>;
+}
+
+export interface DashboardKpis {
+  total: number;
+  recents: number;
+  expired: number;
+  myUploads: number;
+}
+export interface User {
+  name: string;
+}
+
+export interface RecentActivityItem {
+  id: string | number;
+  proc: string;
+  name: string;
+  date: string;
+  rev: string;
+  user: string;
+  status: string;
 }
