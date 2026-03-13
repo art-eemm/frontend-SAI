@@ -10,7 +10,7 @@ export default function DashboardPage() {
   const { kpis, recentActivity, loading } = useDashboardData();
 
   return (
-    <div className="min-h-screen bg-white px-2 sm:px-6 lg:px-8 py-6">
+    <div className="min-h-screen bg-background px-2 sm:px-6 lg:px-8 py-6">
       <DashboardHeader />
 
       <KpiGrid kpis={kpis} />

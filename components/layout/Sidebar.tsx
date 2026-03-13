@@ -3,7 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import {
   Home,
@@ -19,7 +20,10 @@ import {
   XCircle,
   MoreVertical,
   LogOut,
+  Moon,
+  Sun,
 } from "lucide-react";
+import { Switch } from "../ui/switch";
 
 const menuSections = [
   {
@@ -70,7 +74,12 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
+
   const [userData, setUserData] = useState(() => {
     if (typeof window === "undefined") {
       return { name: "Admin SAI", initials: "AS" };
@@ -99,22 +108,93 @@ export default function Sidebar() {
     return { name: "Admin SAI", initials: "AS" };
   });
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
+
   const handleLogout = () => {
     localStorage.removeItem("sai_token");
     localStorage.removeItem("sai_user");
     router.push("/login");
   };
 
+  const handleThemeChange = (e: React.MouseEvent) => {
+    const isDark = resolvedTheme === "dark";
+    const nextTheme = isDark ? "light" : "dark";
+
+    if (!document.startViewTransition) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y),
+    );
+
+    const transition = document.startViewTransition(() => {
+      setTheme(nextTheme);
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+
+      document.documentElement.animate(
+        {
+          clipPath: clipPath,
+        },
+        {
+          duration: 500,
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(theme-change)",
+        },
+      );
+    });
+  };
+
   return (
-    <aside className="w-70 h-screen bg-gray-100 border-r border-gray-200 flex flex-col justify-between">
+    <aside className="w-70 h-screen bg-accent border-r border-border flex flex-col justify-between">
       <Link href={"/dashboard"}>
-        <div className="flex items-center p-6 border-b border-gray-200">
+        <div className="flex items-center p-6 border-b-2 border-border">
           <Image
             src={"/images/DragonPropy.svg"}
             alt="Logo SAI"
             width={80}
             height={40}
-            className="object-contain"
+            className="object-contain dark:hidden"
+            priority
+          />
+
+          <Image
+            src={"/images/DragonPropy_BlackMode.png"}
+            alt="Logo SAI"
+            width={80}
+            height={40}
+            className="object-contain hidden dark:block"
             priority
           />
           <h1 className="text-5xl font-bold italic">SAI</h1>
@@ -125,7 +205,7 @@ export default function Sidebar() {
         {menuSections.map((section, index) => (
           <div key={index}>
             {section.label && (
-              <p className="text-[12px] font-semibold text-gray-400 uppercase mb-3 px-3">
+              <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3 px-3">
                 {section.label}
               </p>
             )}
@@ -143,10 +223,10 @@ export default function Sidebar() {
                       "flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] transition-all",
                       isActive
                         ? "bg-brand-green font-medium"
-                        : "text-gray-900 hover:bg-gray-200",
+                        : "text-foreground hover:bg-background/50",
                     )}
                   >
-                    <Icon size={18} className="text-gray-900" />
+                    <Icon size={18} className="text-foreground" />
                     {item.name}
                   </Link>
                 );
@@ -156,14 +236,14 @@ export default function Sidebar() {
         ))}
       </div>
 
-      <div className="border-t border-gray-200 p-4 bg-[#f5f6f8] relative">
+      <div className="border-t border-border p-4 bg-accent relative">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold text-gray-700">
+            <div className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-sm font-semibold text-muted">
               {userData.initials}
             </div>
 
-            <span className="text-[14px] text-gray-700 font-medium truncate">
+            <span className="text-[14px] text-muted-foreground font-medium truncate">
               {userData.name}
             </span>
           </div>
@@ -171,21 +251,43 @@ export default function Sidebar() {
           <MoreVertical
             size={18}
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="text-gray-500 cursor-pointer"
+            className="text-muted-foreground cursor-pointer"
           />
         </div>
 
-        {showProfileMenu && (
-          <div className="absolute bottom-16 left-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
-            >
-              <LogOut size={16} />
-              Cerrar sesión
-            </button>
-          </div>
-        )}
+        <div ref={profileMenuRef}>
+          {showProfileMenu && (
+            <div className="absolute bottom-16 left-4 right-4 bg-accent border-2 border-border rounded-lg shadow-lg overflow-hidden">
+              <div className="w-full flex items-center justify-between px-4 py-3 hover:bg-background border-b border-border transition-colors">
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  {mounted && resolvedTheme === "dark" ? (
+                    <Sun size={16} />
+                  ) : (
+                    <Moon size={16} />
+                  )}
+                  <span>Tema</span>
+                </div>
+
+                <Switch
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleThemeChange(e);
+                  }}
+                  checked={mounted && resolvedTheme === "dark"}
+                  className="cursor-pointer"
+                />
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-background cursor-pointer"
+              >
+                <LogOut size={16} />
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
   );

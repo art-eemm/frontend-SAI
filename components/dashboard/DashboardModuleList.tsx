@@ -34,13 +34,15 @@ export default function DashboardModuleList({
       <Link
         key={index}
         href={dashboardHref}
-        className="flex items-center justify-between p-4 rounded-xl transition-all group hover:bg-brand-green/70"
+        className="flex items-center justify-between p-4 rounded-xl transition-all group hover:bg-brand-green/50"
       >
         <div className="flex items-center gap-8">
           <Icon className="lg:w-6 lg:h-6 shrink-0" strokeWidth={1.5} />
           <div>
             <h3 className="text-sm font-semibold">{option.title}</h3>
-            <p className="text-xs mt-2 text-gray-600 ">{option.description}</p>
+            <p className="text-xs mt-2 text-muted-foreground ">
+              {option.description}
+            </p>
           </div>
         </div>
 
@@ -55,11 +57,11 @@ export default function DashboardModuleList({
   };
 
   return (
-    <div className="bg-gray-100 rounded-2xl shadow-sm border border-gray-200 px-2 py-6 lg:py-6 lg:px-6">
-      <h2 className="text-lg font-bold text-gray-900 mb-6 px-2">{title}</h2>
+    <div className="bg-accent rounded-2xl shadow-sm border border-border px-2 py-6 lg:py-6 lg:px-6">
+      <h2 className="text-lg font-bold text-foreground mb-6 px-2">{title}</h2>
 
       <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-x-8">
-        <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-gray-200 -translate-x-1/2"></div>
+        <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-px bg-muted-foreground -translate-x-1/2"></div>
 
         <div className="flex flex-col gap-1">
           {leftColumn.map((option, index) => renderOption(option, index))}

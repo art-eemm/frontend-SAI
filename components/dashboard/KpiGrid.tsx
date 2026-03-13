@@ -38,18 +38,22 @@ export default function KpiGrid({ kpis }: KpiGridProps) {
       {kpiCards.map((card, i) => (
         <div
           key={i}
-          className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-md hover:shadow-lg transition"
+          className="bg-accent rounded-xl p-4 sm:p-6 shadow-md hover:shadow-lg transition"
         >
           <div className="flex items-center gap-2 mb-3">
             {card.icon}
-            <h3 className="text-sm font-medium text-gray-700">{card.title}</h3>
+            <h3 className="text-sm font-medium text-foreground">
+              {card.title}
+            </h3>
           </div>
 
           <div className="flex items-end gap-2">
-            <span className="text-2xl font-light text-gray-900">
+            <span className="text-2xl font-light text-foreground">
               {card.value}
             </span>
-            <span className="text-xs text-gray-500 mb-1">{card.desc}</span>
+            <span className="text-xs text-muted-foreground mb-1">
+              {card.desc}
+            </span>
           </div>
         </div>
       ))}

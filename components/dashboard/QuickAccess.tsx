@@ -29,8 +29,8 @@ export default function QuickAccess() {
   ];
 
   return (
-    <div className="bg-gray-100 rounded-xl p-6 shadow-md">
-      <h2 className="text-base font-semibold text-gray-800 mb-6">
+    <div className="bg-accent rounded-xl p-6 shadow-md">
+      <h2 className="text-base font-semibold text-foreground mb-6">
         Accesos rápidos
       </h2>
 
@@ -63,19 +63,19 @@ export default function QuickAccess() {
         ].map((item, i) => (
           <div
             key={i}
-            className="flex justify-between items-center p-2 hover:cursor-pointer hover:bg-gray-200 rounded-xl"
+            className="flex justify-between items-center p-2 hover:cursor-pointer hover:bg-background/50 rounded-xl"
           >
             <div className="flex items-center gap-4">
               {item.icon}
               <div>
-                <h4 className="text-sm font-medium text-gray-800">
+                <h4 className="text-sm font-medium text-foreground">
                   {item.title}
                 </h4>
-                <p className="text-xs text-gray-500">{item.desc}</p>
+                <p className="text-xs text-muted-foreground">{item.desc}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-gray-500 text-xs">
+            <div className="flex items-center gap-2 text-muted-foreground text-xs">
               ({item.count})
               <ChevronRight className="w-4 h-4" />
             </div>

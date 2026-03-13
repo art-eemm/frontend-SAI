@@ -48,7 +48,7 @@ const CAROUSEL_SLIDES = [
 
 export default function HeroCarousel() {
   return (
-    <section className="w-full mx-auto px-2 lg:px-6 py-6">
+    <section className="w-full mx-auto px-2 bg-background lg:px-6 py-6">
       <Carousel
         className="w-full relative rounded-2xl overflow-hidden"
         opts={{

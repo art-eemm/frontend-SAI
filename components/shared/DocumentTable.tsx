@@ -81,22 +81,21 @@ export default function DocumentTable({
   return (
     <div className="w-full">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 mt-4">
-        <h1 className="text-2xl font-bold text-gray-900 capitalize">{title}</h1>
+        <h1 className="text-2xl font-bold text-foreground capitalize">
+          {title}
+        </h1>
 
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative w-full md:w-64">
             <Input
               type="text"
               placeholder="Buscar..."
-              className="w-full bg-white"
+              className="w-full bg-background"
               value={searchTerm}
               onChange={handleSearch}
             />
           </div>
-          <Button
-            variant={"outline"}
-            className="flex items-center gap-2 bg-white"
-          >
+          <Button variant={"outline"} className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4" />
             Filtro
           </Button>
@@ -104,26 +103,26 @@ export default function DocumentTable({
       </div>
 
       {/* Tabla */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="bg-card border border-border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className="px-6 py-4 font-semibold text-gray-900">
+              <TableHead className="px-6 py-4 font-semibold text-foreground">
                 Procedencia
               </TableHead>
-              <TableHead className="px-6 py-4 font-semibold text-gray-900">
+              <TableHead className="px-6 py-4 font-semibold text-foreground">
                 Nombre
               </TableHead>
-              <TableHead className="px-6 py-4 font-semibold text-gray-900 text-center">
+              <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
                 Fecha de Rev.
               </TableHead>
-              <TableHead className="px-6 py-4 font-semibold text-gray-900 text-center">
+              <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
                 Revisión
               </TableHead>
-              <TableHead className="px-6 py-4 font-semibold text-gray-900 text-center">
+              <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
                 Tipo de Archivo
               </TableHead>
-              <TableHead className="px-6 py-4 font-semibold text-gray-900 text-center">
+              <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
                 Acciones
               </TableHead>
             </TableRow>
@@ -133,7 +132,7 @@ export default function DocumentTable({
               <TableRow>
                 <TableCell
                   colSpan={6}
-                  className="text-center py-8 text-gray-500"
+                  className="text-center py-8 text-muted-foreground"
                 >
                   {searchTerm !== ""
                     ? `No se encontraron resultados para "${searchTerm}".`
@@ -142,8 +141,8 @@ export default function DocumentTable({
               </TableRow>
             ) : (
               data.map((doc) => (
-                <TableRow key={doc.id} className="text-gray-600">
-                  <TableCell className="px-6 py-4 font-medium">
+                <TableRow key={doc.id} className="text-muted-foreground">
+                  <TableCell className="px-6 py-4 font-medium text-foreground">
                     {doc.procedencia}
                   </TableCell>
                   <TableCell className="px-6 py-4">{doc.nombre}</TableCell>
@@ -165,7 +164,7 @@ export default function DocumentTable({
                       <Button
                         variant={"ghost"}
                         size={"icon"}
-                        className="text-gray-500 hover:text-gray-900"
+                        className="text-muted-foreground hover:text-foreground hover:bg-accent"
                         title="Ver documento"
                         onClick={() =>
                           setSelectedDoc({
@@ -186,8 +185,8 @@ export default function DocumentTable({
       </div>
 
       {/* Paginación */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-sm gap-4">
-        <div className="text-gray-500">
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-sm gap-4 text-muted-foreground">
+        <div className="">
           Mostrando {totalItems === 0 ? 0 : startIndex + 1} - {endIndex} de{" "}
           {totalItems}
         </div>
