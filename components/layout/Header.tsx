@@ -73,7 +73,10 @@ export default function Header() {
                 </nav>
 
                 <Link href={"/login"} className="mt-auto w-full">
-                  <Button className="mt-auto w-full mb-4" variant={"default"}>
+                  <Button
+                    className="mt-auto w-full mb-4 cursor-pointer"
+                    variant={"default"}
+                  >
                     Iniciar sesión
                   </Button>
                 </Link>
@@ -113,7 +116,7 @@ export default function Header() {
         <Link href={"/login"}>
           <Button
             variant={"default"}
-            className="absolute hidden lg:block right-6 top-6"
+            className="absolute hidden lg:block right-6 top-6 cursor-pointer"
           >
             Iniciar sesión
           </Button>

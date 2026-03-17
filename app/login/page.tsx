@@ -49,8 +49,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f6f9] flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-accent rounded-2xl border-2 border-border shadow-sm p-8">
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <Image
@@ -59,15 +59,24 @@ export default function LoginPage() {
             width={250}
             height={80}
             priority
+            className="dark:hidden"
+          />
+          <Image
+            src="/images/logo-blackmode.svg"
+            alt="Propysol"
+            width={250}
+            height={80}
+            priority
+            className="hidden dark:block"
           />
         </div>
 
         {/* Título */}
         <div className="text-center mb-6">
-          <h1 className="text-lg font-semibold text-gray-800">
+          <h1 className="text-lg font-semibold text-foreground">
             Sistema de Administración Integral
           </h1>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-muted-foreground mt-2">
             Inicia sesión con tu correo empresarial o número de asociado
           </p>
         </div>
@@ -81,7 +90,7 @@ export default function LoginPage() {
           )}
 
           <div>
-            <label className="text-sm font-medium text-gray-900 block mb-2">
+            <label className="text-sm font-medium text-foreground block mb-2">
               Email o número de asociado
             </label>
             <Input
@@ -91,12 +100,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
-              className="bg-gray-100 border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-400"
+              className="bg-accent border-border focus-visible:ring-1 focus-visible:ring-gray-400"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-900 block mb-2">
+            <label className="text-sm font-medium text-foreground block mb-2">
               Contraseña
             </label>
             <Input
@@ -105,14 +114,15 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
-              className="bg-gray-100 border-gray-200 focus-visible:ring-1 focus-visible:ring-gray-400"
+              className="bg-accent border-border focus-visible:ring-1 focus-visible:ring-gray-400"
             />
           </div>
 
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-[#0f172a] hover:bg-[#1e293b] text-white mt-2"
+            variant={"default"}
+            className="w-full mt-2 cursor-pointer"
           >
             Iniciar sesión
           </Button>
@@ -122,7 +132,7 @@ export default function LoginPage() {
         <div className="text-center mt-6">
           <Link
             href="/reset-password"
-            className="text-sm text-gray-500 hover:text-gray-700 underline"
+            className="text-sm text-muted-foreground hover:text-foreground underline"
           >
             ¿Olvidaste tu contraseña?
           </Link>
