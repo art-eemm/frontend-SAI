@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import AuthGuard from "@/components/shared/AuthGuard";
-import { Menu } from "lucide-react";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <AuthGuard>
       <div className="flex h-screen bg-backgorund text-foreground overflow-hidden">
@@ -19,7 +16,10 @@ export default function DashboardLayout({
           <Sidebar />
         </div>
 
-        <div className="flex-1 overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6">
+          <DashboardHeader />
+          {children}
+        </div>
       </div>
     </AuthGuard>
   );

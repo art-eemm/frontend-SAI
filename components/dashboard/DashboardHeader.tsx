@@ -1,16 +1,31 @@
+"use client";
+
 import { Bell, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import Sidebar from "../layout/Sidebar";
+import { usePathname } from "next/navigation";
+import { APP_CONFIG } from "@/lib/constants";
 
-type DashboardHeaderProps = {
-  title?: string;
-  description?: string;
-};
+export default function DashboardHeader() {
+  const pathname = usePathname();
+  const segments = pathname.split("/").filter(Boolean);
 
-export default function DashboardHeader({
-  title = "Inicio",
-  description = "Bienvenido al Sistema de Administración Integral",
-}: DashboardHeaderProps) {
+  let title = "Inicio";
+  let description = "Bienvenido al Sistema de Administración Integral";
+
+  if (segments.length > 1 && segments[0] === "dashboard") {
+    const moduleSlug = segments[1].toLowerCase();
+    const currentModule = APP_CONFIG[moduleSlug];
+
+    if (currentModule) {
+      title = currentModule.title || moduleSlug;
+      description = currentModule.description || description;
+    } else {
+      title = "Error";
+      description = "Módulo no encontrado";
+    }
+  }
+
   return (
     <div className="flex items-center justify-between border-b-2 border-border pb-4 mb-6">
       <div className="flex items-start gap-3">

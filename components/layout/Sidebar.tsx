@@ -212,7 +212,10 @@ export default function Sidebar() {
 
             <div className="space-y-1">
               {section.items.map((item) => {
-                const isActive = pathname === item.route;
+                const isActive =
+                  item.route === "/dashboard"
+                    ? pathname === item.route
+                    : pathname.startsWith(item.route);
                 const Icon = item.icon;
 
                 return (

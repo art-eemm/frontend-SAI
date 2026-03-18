@@ -27,7 +27,9 @@ export default function DashboardModuleList({
   const rightColumn = options.slice(half);
 
   const renderOption = (option: Option, index: number) => {
-    const dashboardHref = `dashboard${option.href}`;
+    const dashboardHref = option.href.startsWith("/dashboard")
+      ? option.href
+      : `/dashboard${option.href}`;
     const Icon = option.icon || FileText;
 
     return (
@@ -40,7 +42,7 @@ export default function DashboardModuleList({
           <Icon className="lg:w-6 lg:h-6 shrink-0" strokeWidth={1.5} />
           <div>
             <h3 className="text-sm font-semibold">{option.title}</h3>
-            <p className="text-xs mt-2 text-muted-foreground ">
+            <p className="text-xs mt-2 text-muted-foreground">
               {option.description}
             </p>
           </div>
