@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { DocItem } from "@/lib/services/documents";
+import { DocumentDetailsSheet } from "./DocumentDetailsSheet";
 
 const DocumentViewer = dynamic(
   () => import("../shared/DocumentViewer").then((mod) => mod.DocumentViewer),
@@ -36,7 +37,7 @@ const getStatusBadge = (status: string) => {
   const formattedStatus = status;
 
   switch (formattedStatus) {
-    case "Nuevo":
+    case "nuevo":
       return <span className={`${base} bg-blue-100 text-blue-600`}>Nuevo</span>;
     case "Vigente":
       return (
@@ -64,6 +65,9 @@ export default function DashboardDocumentTable({
     name: string;
   } | null>(null);
 
+  const [selectedDetailDoc, setSelectedDetailDoc] = useState<DocItem | null>(
+    null,
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -121,19 +125,19 @@ export default function DashboardDocumentTable({
               <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
                 Nombre
               </TableHead>
-              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
+              {/* <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
                 Fecha
-              </TableHead>
-              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
+              </TableHead> */}
+              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
                 Fecha de vencimiento
               </TableHead>
-              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
-                Revisión
+              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
+                Versión
               </TableHead>
-              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
+              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
                 Tipo de Archivo
               </TableHead>
-              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
+              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
                 Estado
               </TableHead>
             </TableRow>
@@ -154,7 +158,8 @@ export default function DashboardDocumentTable({
               currentData.map((doc) => (
                 <TableRow
                   key={doc.id}
-                  className="text-muted-foreground hover:bg-background/50"
+                  className="text-muted-foreground hover:bg-background/50 cursor-pointer"
+                  onClick={() => setSelectedDetailDoc(doc)}
                 >
                   <TableCell className="px-4 py-3 font-medium text-foreground whitespace-nowrap">
                     {doc.procedencia}
@@ -162,7 +167,7 @@ export default function DashboardDocumentTable({
                   <TableCell className="px-4 py-3 whitespace-nowrap">
                     {doc.nombre}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center whitespace-nowrap">
+                  {/* <TableCell className="px-4 py-3 text-center whitespace-nowrap">
                     {new Date(doc.fechaRev)
                       .toLocaleDateString("es-MX", {
                         day: "2-digit",
@@ -170,7 +175,7 @@ export default function DashboardDocumentTable({
                         year: "numeric",
                       })
                       .replace(".", "")}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="px-4 py-3 text-center whitespace-nowrap">
                     {doc.fechaVenc
                       ? new Date(doc.fechaVenc)
@@ -260,6 +265,13 @@ export default function DashboardDocumentTable({
         onClose={() => setSelectedDoc(null)}
         documentUrl={selectedDoc?.url || null}
         documentName={selectedDoc?.name || ""}
+      />
+
+      <DocumentDetailsSheet
+        isOpen={!!selectedDetailDoc}
+        onClose={() => setSelectedDetailDoc(null)}
+        document={selectedDetailDoc}
+        onOpenPdf={(url, name) => setSelectedDoc({ url, name })}
       />
     </div>
   );

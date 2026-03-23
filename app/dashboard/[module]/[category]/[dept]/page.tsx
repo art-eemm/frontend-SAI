@@ -3,8 +3,7 @@ import DashboardDocumentTable from "@/components/dashboard/DashboardDocumentTabl
 import { CustomBreadcrumbs } from "@/components/shared/CustomBreadcrumbs";
 import { DepartmentItem } from "@/lib/types";
 import { fetchDocuments } from "@/lib/services/documents";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import UploadDocumentButton from "@/components/shared/UploadDocumentButton";
 
 export default async function DashboardDepartmenPage({
   params,
@@ -26,6 +25,10 @@ export default async function DashboardDepartmenPage({
     );
   }
 
+  const currentCategory = currentModule.options?.find(
+    (opt) => opt.href.split("/").pop() === categorySlug,
+  );
+
   const currentDept = Array.isArray(currentModule.departments)
     ? currentModule.departments.find(
         (d: DepartmentItem) => d.title.toLowerCase() === deptSlug,
@@ -41,10 +44,9 @@ export default async function DashboardDepartmenPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <CustomBreadcrumbs />
 
-        <Button className="bg-brand-green text-gray-900 hover:bg-brand-green/80 flex items-center gap-2 cursor-pointer">
-          <Plus className="h-4 w-4" />
-          Nuevo documento
-        </Button>
+        <UploadDocumentButton
+          category={currentCategory?.title || categorySlug}
+        />
       </div>
 
       <DashboardDocumentTable title={tableTitle} data={tableData} />

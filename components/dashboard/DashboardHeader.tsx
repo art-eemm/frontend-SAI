@@ -5,26 +5,31 @@ import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import Sidebar from "../layout/Sidebar";
 import { usePathname } from "next/navigation";
 import { APP_CONFIG } from "@/lib/constants";
+import { useHeader } from "@/lib/contexts/HeaderContext";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
+  const { headerState } = useHeader();
 
-  let title = "Inicio";
-  let description = "Bienvenido al Sistema de Administración Integral";
+  let defaultTitle = "Inicio";
+  let defaultDescription = "Bienvenido al Sistema de Administración Integral";
 
   if (segments.length > 1 && segments[0] === "dashboard") {
     const moduleSlug = segments[1].toLowerCase();
     const currentModule = APP_CONFIG[moduleSlug];
 
     if (currentModule) {
-      title = currentModule.title || moduleSlug;
-      description = currentModule.description || description;
+      defaultTitle = currentModule.title || moduleSlug;
+      defaultDescription = currentModule.description || defaultDescription;
     } else {
-      title = "Error";
-      description = "Módulo no encontrado";
+      defaultTitle = "Error";
+      defaultDescription = "Módulo no encontrado";
     }
   }
+
+  const displayTitle = headerState.title || defaultTitle;
+  const displayDescription = headerState.subtitle || defaultDescription;
 
   return (
     <div className="flex items-center justify-between border-b-2 border-border pb-4 mb-6">
@@ -45,11 +50,11 @@ export default function DashboardHeader() {
 
         <div>
           <h1 className="text-md sm:text-lg font-semibold text-foreground">
-            {title}
+            {displayTitle}
           </h1>
-          <p className="text-xs md:text-sm text-muted-foreground mt-1">
-            {description}
-          </p>
+          <div className="text-xs md:text-sm text-muted-foreground mt-1">
+            {displayDescription}
+          </div>
         </div>
       </div>
 

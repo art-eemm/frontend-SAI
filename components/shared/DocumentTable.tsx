@@ -117,7 +117,7 @@ export default function DocumentTable({
                 Fecha de Rev.
               </TableHead>
               <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
-                Revisión
+                Versión
               </TableHead>
               <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
                 Tipo de Archivo

@@ -1,15 +1,24 @@
 import { ApiDocument, ApiDocumentDetail } from "../types";
 
+export interface DocVersion {
+  revision: string | number;
+  fecha: string;
+  url: string;
+  usuario: string;
+}
+
 export interface DocItem {
   id: string;
   procedencia: string;
   nombre: string;
+  categoria: string;
   fechaRev: string;
   fechaVenc: string | null;
   revision: string;
   tipo: string;
   estado: string;
   url: string;
+  versiones: DocVersion[];
 }
 
 export async function fetchDocuments(
@@ -45,6 +54,18 @@ export async function fetchDocuments(
         );
         const detail: ApiDocumentDetail = await detailRes.json();
 
+        const mappedVersions: DocVersion[] = (detail.versions || [])
+          .map((v) => {
+            const cleanUrl = v.file_url?.replace(/\\/g, "/") || "";
+            return {
+              revision: Number(v.revision_number ?? 0),
+              fecha: v.revision_date || doc.created_at,
+              url: cleanUrl ? `http://localhost:4000/${cleanUrl}` : "/SAI.pdf",
+              usuario: doc.uploaded_by,
+            };
+          })
+          .sort((a, b) => b.revision - a.revision);
+
         const lastestVersion = detail.versions?.[0];
         const cleanFileUrl = lastestVersion?.file_url?.replace(/\\/g, "/");
         const finalUrl = cleanFileUrl
@@ -57,12 +78,14 @@ export async function fetchDocuments(
           id: doc.id,
           procedencia: doc.origin_code,
           nombre: doc.title,
+          categoria: doc.category,
           fechaRev: lastestVersion?.revision_date || doc.created_at,
           fechaVenc: doc.expiration_date,
           revision: `${currentRevisionNumber}`,
           tipo: lastestVersion?.file_type || "PDF",
           estado: doc.status,
           url: finalUrl,
+          versiones: mappedVersions,
         };
       }),
     );
@@ -72,4 +95,53 @@ export async function fetchDocuments(
     console.error("Error fetching docs:", error);
     return [];
   }
+}
+
+export async function uploadNewDocument(formData: FormData): Promise<void> {
+  const token = localStorage.getItem("sai_token");
+
+  const res = await fetch("http://localhost:4000/api/documents/upload", {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    let errorMessage = "Error al subir el documento";
+    try {
+      const errorJson = JSON.parse(errorText);
+      errorMessage = errorJson.message || errorJson.error || errorMessage;
+      if (Array.isArray(errorJson.message)) {
+        errorMessage = errorJson.message.join(", ");
+      }
+    } catch (e) {}
+    throw new Error(errorMessage);
+  }
+}
+
+export async function compareDocumentVersions(
+  documentId: string,
+  revA: string,
+  revB: string,
+) {
+  const token = localStorage.getItem("sai_token");
+
+  const res = await fetch(
+    `http://localhost:4000/api/documents/${documentId}/compare?revA=${revA}&revB=${revB}`,
+    {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.error || "Error al comparar versiones");
+  }
+
+  return res.json();
 }

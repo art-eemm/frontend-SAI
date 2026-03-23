@@ -13,9 +13,9 @@ export default async function DashboardModulePage({
 
   if (!currentModule) {
     return (
-      <div className="p-6">
+      <div>
         <p className="text-muted-foreground">
-          Este modulo aún no ha sido configurado.
+          Este módulo aún no ha sido configurado.
         </p>
       </div>
     );

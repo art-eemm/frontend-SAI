@@ -51,6 +51,7 @@ const DEPARTAMENTOS = [
     description: "Tecnologías de la Información y la Comunicación",
   },
   { title: "TRA", description: "Transporte" },
+  { title: "MTO", description: "Mantenimiento" },
 ];
 
 const ASPECTOS_CALIDAD = [

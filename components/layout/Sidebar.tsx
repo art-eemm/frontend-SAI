@@ -262,13 +262,18 @@ export default function Sidebar() {
           {showProfileMenu && (
             <div className="absolute bottom-16 left-4 right-4 bg-accent border-2 border-border rounded-lg shadow-lg overflow-hidden">
               <div className="w-full flex items-center justify-between px-4 py-3 hover:bg-background border-b border-border transition-colors">
-                <div className="flex items-center gap-2 text-sm text-foreground">
+                <div className="text-sm text-foreground">
                   {mounted && resolvedTheme === "dark" ? (
-                    <Sun size={16} />
+                    <div className="flex gap-2 items-center">
+                      <Sun size={16} />
+                      Claro
+                    </div>
                   ) : (
-                    <Moon size={16} />
+                    <div className="flex gap-2 items-center">
+                      <Moon size={16} />
+                      Oscuro
+                    </div>
                   )}
-                  <span>Tema</span>
                 </div>
 
                 <Switch

@@ -14,7 +14,7 @@ export interface ApiDocument {
 export interface ApiDocumentDetail {
   versions?: Array<{
     revision_date?: string;
-    revision_number?: number;
+    revision_number?: string;
     revision_label?: string;
     file_type: string;
     file_url?: string;
@@ -57,4 +57,25 @@ export interface RecentActivityItem {
   rev: string;
   user: string;
   status: string;
+}
+
+export interface DiffPart {
+  type: "added" | "removed" | "unchanged";
+  value: string;
+}
+
+export interface CompareResponse {
+  document: { id: string; title: string; origin_code: string };
+  comparison: {
+    revA: { number: string; label: string; uploadedAt: string };
+    revB: { number: string; label: string; uploadedAt: string };
+  };
+  stats: {
+    totalChars: number;
+    addedChars: number;
+    removedChars: number;
+    unchangedChars: number;
+    changePercent: number;
+  };
+  inline: DiffPart[];
 }

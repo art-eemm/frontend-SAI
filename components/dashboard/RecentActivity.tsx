@@ -104,7 +104,7 @@ export default function RecentActivity({
                       Fecha
                     </TableHead>
                     <TableHead className="text-sm font-bold whitespace-nowrap">
-                      Revisión
+                      Versión
                     </TableHead>
                     <TableHead className="text-sm font-bold whitespace-nowrap">
                       Usuario

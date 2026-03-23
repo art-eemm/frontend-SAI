@@ -6,6 +6,7 @@ import { DepartmentItem } from "@/lib/types";
 import { DocItem, fetchDocuments } from "@/lib/services/documents";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import UploadDocumentButton from "@/components/shared/UploadDocumentButton";
 
 export default async function DashboardCategoryPage({
   params,
@@ -52,10 +53,9 @@ export default async function DashboardCategoryPage({
         <CustomBreadcrumbs />
 
         {isDirectCategory && (
-          <Button className="bg-brand-green text-foreground hover:bg-brand-green/80 flex items-center gap-2 cursor-pointer">
-            <Plus className="h-4 w-4" />
-            Nuevo documento
-          </Button>
+          <UploadDocumentButton
+            category={currentCategory?.title || categorySlug}
+          />
         )}
       </div>
 
