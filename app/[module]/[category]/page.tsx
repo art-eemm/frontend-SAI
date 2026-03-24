@@ -1,8 +1,9 @@
 import { CustomBreadcrumbs } from "@/components/shared/CustomBreadcrumbs";
 import OptionGrid from "@/components/shared/OptionGrid";
-import DocumentTable from "@/components/shared/DocumentTable";
+import DocumentTable, { DocItem } from "@/components/shared/DocumentTable";
 import { APP_CONFIG } from "@/lib/constants";
 import { getFormattedName } from "@/lib/utils";
+import { fetchDocuments } from "@/lib/services/documents";
 
 export default async function CategoryPage({
   params,
@@ -13,13 +14,6 @@ export default async function CategoryPage({
   const currentModuleConfig = APP_CONFIG[module.toLowerCase()];
   const pageTitle = getFormattedName(category);
   let categoryDepartments: { title: string; description: string }[] = [];
-
-  if (Array.isArray(currentModuleConfig.departments)) {
-    categoryDepartments = currentModuleConfig.departments;
-  } else if (currentModuleConfig.departments) {
-    categoryDepartments =
-      currentModuleConfig.departments[category.toLowerCase()] || [];
-  }
 
   if (!currentModuleConfig) {
     return (
@@ -32,11 +26,20 @@ export default async function CategoryPage({
     );
   }
 
+  if (Array.isArray(currentModuleConfig.departments)) {
+    categoryDepartments = currentModuleConfig.departments;
+  } else if (currentModuleConfig.departments) {
+    categoryDepartments =
+      currentModuleConfig.departments[category.toLowerCase()] || [];
+  }
+
   if (currentModuleConfig.directCategories.includes(category.toLowerCase())) {
+    const tableData = await fetchDocuments(category);
+
     return (
       <main className="max-w-7xl mx-auto px-4 py-10">
         <CustomBreadcrumbs />
-        <DocumentTable title={pageTitle} module={module} category={category} />
+        <DocumentTable title={pageTitle} data={tableData} />
       </main>
     );
   }

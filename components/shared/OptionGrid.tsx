@@ -17,12 +17,12 @@ export default function OptionGrid({ options }: OptionGridProps) {
         <Link
           key={index}
           href={option.href}
-          className="border border-brand-green rounded-xl p-6 bg-white hover:bg-gray-200 hover:cursor-pointer"
+          className="border border-brand-green rounded-xl p-6 bg-background hover:bg-accent hover:cursor-pointer"
         >
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             {option.title}
           </h3>
-          <p className="text-sm text-gray-500">{option.description}</p>
+          <p className="text-sm text-muted-foreground">{option.description}</p>
         </Link>
       ))}
     </div>

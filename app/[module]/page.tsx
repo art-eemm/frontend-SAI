@@ -16,11 +16,11 @@ export default async function ModulePage({
     return (
       <main className="max-w-7xl mx-auto px-4 py-10">
         <CustomBreadcrumbs />
-        <h1 className="text-2xl font-semibold text-gray-900 mb-8 capitalize">
+        <h1 className="text-2xl font-semibold text-foreground mb-8 capitalize">
           {moduleSlug.replace(/-/g, "")}
         </h1>
-        <div className="bg-white p-6 rounded-xl border border-gray-200">
-          <p className="text-gray-500">
+        <div className="bg-background p-6 rounded-xl border border-border">
+          <p className="text-muted-foreground">
             Las opciones para este módulo aún no han sido configuradas.
           </p>
         </div>
@@ -31,7 +31,7 @@ export default async function ModulePage({
   return (
     <main className="max-w-7xl mx-auto px-4 py-10">
       <CustomBreadcrumbs />
-      <h1 className="text-2xl font-semibold text-gray-900 mb-8">
+      <h1 className="text-2xl font-semibold text-foreground mb-8">
         {currentModule.title}
       </h1>
 

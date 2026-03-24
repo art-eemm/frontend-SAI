@@ -35,14 +35,14 @@ export function DocumentViewer({
         </DialogHeader>
 
         <div
-          className="flex-1 w-full overflow-y-auto bg-slate-100 rounded-md py-6 px-2 flex justify-center custom-scrollbar"
+          className="flex-1 w-full overflow-y-auto bg-slate-100 dark:bg-gray-900 rounded-md py-6 px-2 flex justify-center custom-scrollbar"
           onContextMenu={(e) => e.preventDefault()}
         >
           <Document
             file={documentUrl}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
-              <div className="flex items-center justify-center h-full text-gray-500 font-medium">
+              <div className="flex items-center justify-center h-full text-muted-foreground font-medium">
                 Cargando documento, por favor espera...
               </div>
             }
@@ -51,7 +51,7 @@ export function DocumentViewer({
             {Array.from(new Array(numPages), (el, index) => (
               <div
                 key={`page_${index + 1}`}
-                className="shadow-lg border border-gray-200"
+                className="shadow-lg border border-border"
               >
                 <Page
                   pageNumber={index + 1}

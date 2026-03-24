@@ -39,3 +39,14 @@ export function getFormattedName(slug: string): string {
 
   return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }
+
+export const formatDate = (dateString: string | null) => {
+  if (!dateString) return "N/A";
+  return new Date(dateString)
+    .toLocaleDateString("es-MX", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+    .replace(".", "");
+};
