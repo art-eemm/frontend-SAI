@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
@@ -17,6 +17,8 @@ import {
   ChevronsLeft,
   ChevronsRight,
   SlidersHorizontal,
+  Eye,
+  Download,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { DocItem } from "@/lib/services/documents";
@@ -53,6 +55,50 @@ const getStatusBadge = (status: string) => {
       );
     default:
       return <span>{status}</span>;
+  }
+};
+
+const getFileTypeColor = (tipo: string) => {
+  const t = tipo?.toLowerCase() || "";
+  if (t.includes("pdf")) return "bg-red-500";
+  if (t.includes("doc") || t.includes("word")) return "bg-blue-600";
+  if (t.includes("xls") || t.includes("excel")) return "bg-green-600";
+  if (t.includes("ppt") || t.includes("power")) return "bg-orange-500";
+  return "bg-slate-500";
+};
+
+const forceDownload = async (
+  e: React.MouseEvent,
+  url: string | undefined,
+  filename: string,
+) => {
+  e.stopPropagation();
+  if (!url) return;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Network response was not ok");
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename || "documento";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("Error al forzar la descarga:", error);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename || "documento";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 };
 
@@ -93,7 +139,7 @@ export default function DashboardDocumentTable({
         <h1 className="text-xl font-bold text-foreground mb-2">{title}</h1>
 
         <div className="flex items-center justify-between">
-          <div className="relative w-full md:w-64">
+          <div className="relative w-full md:w-2/4">
             <Input
               placeholder="Buscar..."
               className="w-full bg-background"
@@ -140,13 +186,16 @@ export default function DashboardDocumentTable({
               <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
                 Estado
               </TableHead>
+              <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
+                Acciones
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {currentData.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={10}
+                  colSpan={7}
                   className="text-center py-8 text-muted-foreground"
                 >
                   {searchTerm !== ""
@@ -181,10 +230,11 @@ export default function DashboardDocumentTable({
                       ? new Date(doc.fechaVenc)
                           .toLocaleDateString("es-MX", {
                             day: "2-digit",
-                            month: "2-digit",
+                            month: "short",
                             year: "numeric",
                           })
                           .replace(".", "")
+                          .toUpperCase()
                       : "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
@@ -192,13 +242,48 @@ export default function DashboardDocumentTable({
                   </TableCell>
                   <TableCell className="px-4 py-3">
                     <div className="flex justify-center">
-                      <span className="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                      <span
+                        className={`${getFileTypeColor(doc.tipo)} text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider`}
+                      >
                         {doc.tipo}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
-                    {getStatusBadge(doc.estado)}
+                    {getStatusBadge(
+                      !doc.fechaVenc || doc.fechaVenc === "N/A"
+                        ? "Vigente"
+                        : doc.estado,
+                    )}
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <div className="flez items-center justify-center gap-2">
+                      <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedDoc({
+                            url: doc.url || "/SAI.pdf",
+                            name: doc.nombre,
+                          });
+                        }}
+                        title="Ver documento"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        variant={"ghost"}
+                        size={"icon"}
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+                        onClick={(e) => forceDownload(e, doc.url, doc.nombre)}
+                        title="Descargar original"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

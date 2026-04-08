@@ -45,8 +45,9 @@ export const formatDate = (dateString: string | null) => {
   return new Date(dateString)
     .toLocaleDateString("es-MX", {
       day: "2-digit",
-      month: "2-digit",
+      month: "short",
       year: "numeric",
     })
+    .toUpperCase()
     .replace(".", "");
 };

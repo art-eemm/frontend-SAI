@@ -115,7 +115,6 @@ export const APP_CONFIG: Record<string, ModuleConfig> = {
           "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
         href: "/documentacion/manuales",
         icon: Folder,
-        count: 10,
       },
       {
         title: "Procedimientos",
@@ -123,7 +122,6 @@ export const APP_CONFIG: Record<string, ModuleConfig> = {
           "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
         href: "/documentacion/procedimientos",
         icon: Settings,
-        count: 11,
       },
       {
         title: "Instructivos",
@@ -131,7 +129,6 @@ export const APP_CONFIG: Record<string, ModuleConfig> = {
           "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
         href: "/documentacion/instructivos",
         icon: FilePen,
-        count: 5,
       },
       {
         title: "Formatos",
@@ -139,7 +136,6 @@ export const APP_CONFIG: Record<string, ModuleConfig> = {
           "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
         href: "/documentacion/formatos",
         icon: File,
-        count: 2,
       },
       {
         title: "Complementarios",
@@ -147,7 +143,6 @@ export const APP_CONFIG: Record<string, ModuleConfig> = {
           "Lorem ipsum dolor sit amet consectetur adipiscing, elit duis nec molestie rutrum feugiat leo, potenti ridiculus.",
         href: "/documentacion/complementarios",
         icon: FilePlus,
-        count: 8,
       },
     ],
     directCategories: ["manuales"],

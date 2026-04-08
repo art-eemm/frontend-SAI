@@ -112,11 +112,13 @@ export const useDashboardData = () => {
 
             const dateObj = new Date(doc.created_at);
             const formattedDate = !isNaN(dateObj.getTime())
-              ? dateObj.toLocaleDateString("es-Mx", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                })
+              ? dateObj
+                  .toLocaleDateString("es-Mx", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                  .toUpperCase()
               : "Sin fecha";
 
             return {

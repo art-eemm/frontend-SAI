@@ -90,7 +90,7 @@ export default function Sidebar() {
     if (storedUser) {
       try {
         const user = JSON.parse(storedUser);
-        const nameParts = user.name ? user.name.spli(" ") : ["Admin", "SAI"];
+        const nameParts = user.name ? user.name.split(" ") : ["Admin", "SAI"];
 
         const initials =
           nameParts.length > 1

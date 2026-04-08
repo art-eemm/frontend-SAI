@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useRef } from "react";
 import { ArrowLeft, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,11 +17,19 @@ import { DiffPart } from "@/lib/types";
 const DiffPanel = ({
   parts,
   hideType,
+  panelRef,
+  onScroll,
 }: {
   parts: DiffPart[];
   hideType: "added" | "removed";
+  panelRef?: React.RefObject<HTMLDivElement | null>;
+  onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
 }) => (
-  <div className="bg-background border rounded-lg p-5 text-xs text-foreground leading-relaxed font-mono whitespace-pre-wrap wrap-break-word overflow-y-auto h-full shadow-inner no-scrollbar">
+  <div
+    ref={panelRef}
+    onScroll={onScroll}
+    className="bg-background border rounded-lg p-5 text-xs text-foreground leading-relaxed font-mono whitespace-pre-wrap wrap-break-word overflow-y-auto h-full shadow-inner no-scrollbar"
+  >
     {parts.map((part, index) => {
       if (part.type === hideType) return null;
 
@@ -60,6 +68,36 @@ export default function DiffViewer({
 
   const { availableVersions, revA, setRevA, revB, setRevB, data, isLoading } =
     useDiffViewer(documentId);
+
+  const leftPanelRef = useRef<HTMLDivElement | null>(null);
+  const rightPanelRef = useRef<HTMLDivElement | null>(null);
+
+  const isSyncingLeft = useRef(false);
+  const isSyncingRight = useRef(false);
+
+  const handleLeftScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (isSyncingLeft.current) {
+      isSyncingLeft.current = false;
+      return;
+    }
+    isSyncingRight.current = true;
+    if (rightPanelRef.current) {
+      rightPanelRef.current.scrollTop = e.currentTarget.scrollTop;
+      rightPanelRef.current.scrollLeft = e.currentTarget.scrollLeft;
+    }
+  };
+
+  const handleRightScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (isSyncingRight.current) {
+      isSyncingRight.current = false;
+      return;
+    }
+    isSyncingLeft.current = true;
+    if (leftPanelRef.current) {
+      leftPanelRef.current.scrollTop = e.currentTarget.scrollTop;
+      leftPanelRef.current.scrollLeft = e.currentTarget.scrollLeft;
+    }
+  };
 
   return (
     <div className="w-full h-[calc(100vh-195px)] flex flex-col">
@@ -131,8 +169,18 @@ export default function DiffViewer({
             </div>
           ) : (
             <>
-              <DiffPanel parts={data.inline} hideType="added" />
-              <DiffPanel parts={data.inline} hideType="removed" />
+              <DiffPanel
+                parts={data.inline}
+                hideType="added"
+                panelRef={leftPanelRef}
+                onScroll={handleLeftScroll}
+              />
+              <DiffPanel
+                parts={data.inline}
+                hideType="removed"
+                panelRef={rightPanelRef}
+                onScroll={handleRightScroll}
+              />
             </>
           )}
         </div>

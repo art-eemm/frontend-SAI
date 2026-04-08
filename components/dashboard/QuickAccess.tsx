@@ -1,33 +1,6 @@
 import { Folder, Shield, Settings, History, ChevronRight } from "lucide-react";
 
 export default function QuickAccess() {
-  const items = [
-    {
-      icon: <Folder className="w-4 h-4" />,
-      title: "Manuales",
-      desc: "Guías de operación y seguridad",
-      count: 5,
-    },
-    {
-      icon: <Shield className="w-4 h-4" />,
-      title: "Protocolos de Validación",
-      desc: "Validación de calidad",
-      count: 2,
-    },
-    {
-      icon: <Settings className="w-4 h-4" />,
-      title: "Procedimientos",
-      desc: "Pasos estandarizados de operación",
-      count: 100,
-    },
-    {
-      icon: <History className="w-4 h-4" />,
-      title: "Control de Cambios",
-      desc: "Registro histórico de versiones",
-      count: 2,
-    },
-  ];
-
   return (
     <div className="bg-accent rounded-xl p-6 shadow-md">
       <h2 className="text-base font-semibold text-foreground mb-6">

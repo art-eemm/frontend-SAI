@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import FloatingThemeToggle from "@/components/shared/FloatingThemeToggle";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -32,6 +33,8 @@ export default function RootLayout({
         >
           <Header />
           {children}
+          <FloatingThemeToggle />
+
           <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>

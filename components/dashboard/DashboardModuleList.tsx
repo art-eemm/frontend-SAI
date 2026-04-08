@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { ChevronRight, FileText } from "lucide-react";
-
+import { useEffect, useState } from "react";
 import { Option } from "@/lib/types";
 import { APP_CONFIG } from "@/lib/constants";
 import { usePathname } from "next/navigation";
+import { fetchDocuments } from "@/lib/services/documents";
 
 type DashboardModuleListProps = {
   moduleSlug: string;
@@ -15,16 +16,47 @@ export default function DashboardModuleList({
   moduleSlug,
 }: DashboardModuleListProps) {
   const pathname = usePathname();
-
   const currentModule = APP_CONFIG[moduleSlug];
+
+  const [dynamicOptions, setDynamicOptions] = useState<Option[]>(
+    currentModule?.options || [],
+  );
+
+  useEffect(() => {
+    if (!currentModule) return;
+
+    const loadRealCounts = async () => {
+      try {
+        const allDocs = await fetchDocuments();
+
+        const updatedOptions = currentModule.options.map((option) => {
+          const docCount = allDocs.filter(
+            (doc) =>
+              doc.categoria?.toLowerCase() === option.title.toLowerCase(),
+          ).length;
+
+          return {
+            ...option,
+            count: docCount,
+          };
+        });
+
+        setDynamicOptions(updatedOptions);
+      } catch (error) {
+        console.error("Error al cargar contadores de documentos:", error);
+      }
+    };
+
+    loadRealCounts();
+  }, [currentModule]);
 
   if (!currentModule) return null;
 
-  const { title, options } = currentModule;
+  const { title } = currentModule;
 
-  const half = Math.ceil(options.length / 2);
-  const leftColumn = options.slice(0, half);
-  const rightColumn = options.slice(half);
+  const half = Math.ceil(dynamicOptions.length / 2);
+  const leftColumn = dynamicOptions.slice(0, half);
+  const rightColumn = dynamicOptions.slice(half);
 
   const renderOption = (option: Option, index: number) => {
     const dashboardHref = option.href.startsWith("/dashboard")

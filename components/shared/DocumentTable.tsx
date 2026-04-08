@@ -14,6 +14,7 @@ import {
 import {
   SlidersHorizontal,
   Eye,
+  Download,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -42,6 +43,15 @@ interface DocumentTableProps {
   title: string;
   data: DocItem[];
 }
+
+const getFileTypeColor = (tipo: string) => {
+  const t = tipo?.toLowerCase() || "";
+  if (t.includes("pdf")) return "bg-red-500";
+  if (t.includes("doc") || t.includes("word")) return "bg-blue-600";
+  if (t.includes("xls") || t.includes("excel")) return "bg-green-600";
+  if (t.includes("ppt") || t.includes("power")) return "bg-orange-500";
+  return "bg-slate-500";
+};
 
 export default function DocumentTable({
   title,
@@ -147,34 +157,64 @@ export default function DocumentTable({
                   </TableCell>
                   <TableCell className="px-6 py-4">{doc.nombre}</TableCell>
                   <TableCell className="px-6 py-4 text-center">
-                    {new Date(doc.fechaRev).toLocaleDateString("es-MX")}
+                    {new Date(doc.fechaRev)
+                      .toLocaleDateString("es-MX", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
+                      .replace(".", "")
+                      .toUpperCase()}
                   </TableCell>
                   <TableCell className="px-6 py-4 text-center">
                     {doc.revision}
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <div className="flex justify-center">
-                      <span className="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                      <span
+                        className={`${getFileTypeColor(doc.tipo)} text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider`}
+                      >
                         {doc.tipo}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <div className="flex justify-center">
-                      <Button
-                        variant={"ghost"}
-                        size={"icon"}
-                        className="text-muted-foreground hover:text-foreground hover:bg-accent"
-                        title="Ver documento"
-                        onClick={() =>
-                          setSelectedDoc({
-                            url: doc.url || "/SAI.pdf",
-                            name: doc.nombre,
-                          })
-                        }
-                      >
-                        <Eye className="h-5 w-5" />
-                      </Button>
+                      {doc.tipo?.toLowerCase().includes("pdf") ? (
+                        <Button
+                          variant={"ghost"}
+                          size={"icon"}
+                          className="text-muted-foreground hover:text-foreground hover:bg-accent"
+                          title="Ver documento"
+                          onClick={() =>
+                            setSelectedDoc({
+                              url: doc.url || "/SAI.pdf",
+                              name: doc.nombre,
+                            })
+                          }
+                        >
+                          <Eye className="h-5 w-5" />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant={"ghost"}
+                          size={"icon"}
+                          className="text-muted-foreground hover:text-foreground hover:bg-accent"
+                          title="Descargar documento"
+                          onClick={() => {
+                            if (!doc.url) return;
+                            const link = document.createElement("a");
+                            link.href = doc.url;
+                            link.download = doc.nombre || "documento";
+                            // link.target = "_blank";
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }}
+                        >
+                          <Download className="h-5 w-5" />
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

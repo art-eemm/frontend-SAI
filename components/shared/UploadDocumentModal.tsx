@@ -10,7 +10,6 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FileUp, FileText, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { uploadNewDocument } from "@/lib/services/documents";
@@ -41,9 +40,9 @@ export default function UploadDocumentModal({
     setProcedencia("");
     setTitulo("");
     setFile(null);
-    setExpYears("0");
-    setExpMonths("0");
-    setVersion("0");
+    setExpYears("");
+    setExpMonths("");
+    setVersion("");
     onClose();
   };
 
@@ -220,10 +219,12 @@ export default function UploadDocumentModal({
             Cancelar
           </Button>
           <Button
-            className="bg-brand-green text-gray-900 hover:bg-brand-green/90"
+            className="bg-brand-green text-foreground hover:bg-brand-green/90"
             onClick={handleUpload}
             size="sm"
-            disabled={!titulo || !procedencia || !file || isUploading}
+            disabled={
+              !titulo || !procedencia || !file || !version || isUploading
+            }
           >
             {isUploading ? "Subiendo..." : "Subir documento"}
           </Button>

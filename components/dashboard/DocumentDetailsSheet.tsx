@@ -45,18 +45,21 @@ export function DocumentDetailsSheet({
             <div className="flex gap-3">
               <Button
                 className="bg-brand-green hover:bg-brand-green/80 text-foreground gap-2 cursor-pointer w-3/4"
-                onClick={() =>
-                  actions.downloadVersion(
-                    document.url,
-                    document.nombre,
-                    document.revision,
-                    document.tipo,
-                  )
-                }
+                onClick={() => {
+                  if (!document.url) return;
+                  const link = window.document.createElement("a");
+                  link.href = document.url;
+                  link.download = document.nombre || "documento";
+                  // link.target = "_blank";
+                  window.document.body.appendChild(link);
+                  link.click();
+                  window.document.body.removeChild(link);
+                }}
               >
                 <Download className="w-4 h-4" />
                 Descargar Ver. {document.revision}
               </Button>
+
               <Button
                 variant="outline"
                 className="gap-2 flex-1 cursor-pointer"
