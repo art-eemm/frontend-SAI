@@ -1,41 +1,13 @@
-import { FileText, Calendar, UploadCloud, AlertCircle } from "lucide-react";
-import { DashboardKpis } from "@/lib/types";
+import { KpiCardData } from "@/lib/types";
 
 interface KpiGridProps {
-  kpis: DashboardKpis;
+  items: KpiCardData[];
 }
 
-export default function KpiGrid({ kpis }: KpiGridProps) {
-  const kpiCards = [
-    {
-      icon: <FileText className="w-4 h-4 text-yellow-500" />,
-      title: "Documentos totales",
-      value: kpis.total.toString(),
-      desc: "documentos",
-    },
-    {
-      icon: <Calendar className="w-4 h-4 text-blue-500" />,
-      title: "Nuevos esta semana",
-      value: kpis.recents.toString(),
-      desc: "nuevos documentos",
-    },
-    {
-      icon: <UploadCloud className="w-4 h-4 text-green-500" />,
-      title: "Mis subidas",
-      value: kpis.myUploads.toString(),
-      desc: "documentos subidos",
-    },
-    {
-      icon: <AlertCircle className="w-4 h-4 text-red-500" />,
-      title: "Vencidos",
-      value: kpis.expired.toString(),
-      desc: "documentos vencidos",
-    },
-  ];
-
+export default function KpiGrid({ items }: KpiGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-8">
-      {kpiCards.map((card, i) => (
+      {items.map((card, i) => (
         <div
           key={i}
           className="bg-accent rounded-xl p-4 sm:p-6 shadow-md hover:shadow-lg transition"

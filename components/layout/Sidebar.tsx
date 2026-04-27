@@ -6,83 +6,22 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
-import {
-  Home,
-  ClipboardList,
-  Target,
-  FileText,
-  Info,
-  TrendingUp,
-  Network,
-  Folder,
-  FileSearch,
-  MessageSquare,
-  XCircle,
-  MoreVertical,
-  LogOut,
-  Moon,
-  Sun,
-} from "lucide-react";
+import { MoreVertical, LogOut, Moon, Sun } from "lucide-react";
 import { Switch } from "../ui/switch";
-
-const menuSections = [
-  {
-    label: null,
-    items: [{ name: "Inicio", route: "/dashboard", icon: Home }],
-  },
-  {
-    label: "Documentos",
-    items: [
-      {
-        name: "Planeación estratégica",
-        route: "/dashboard/planeacion",
-        icon: ClipboardList,
-      },
-      { name: "Objetivos", route: "/dashboard/objetivos", icon: Target },
-      {
-        name: "Documentación",
-        route: "/dashboard/documentacion",
-        icon: FileText,
-      },
-      { name: "Aspectos relevantes", route: "/dashboard/aspectos", icon: Info },
-      {
-        name: "Indicadores de proceso",
-        route: "/dashboard/indicadores",
-        icon: TrendingUp,
-      },
-      {
-        name: "Estructura organizacional",
-        route: "/dashboard/estructura",
-        icon: Network,
-      },
-      { name: "Programas", route: "/dashboard/programas", icon: Folder },
-      { name: "Auditorias", route: "/dashboard/auditorias", icon: FileSearch },
-      {
-        name: "Comunicación",
-        route: "/dashboard/comunicacion",
-        icon: MessageSquare,
-      },
-    ],
-  },
-  {
-    label: "Revisiones",
-    items: [{ name: "Vencidos", route: "/dashboard/vencidos", icon: XCircle }],
-  },
-];
+import { adminMenu, responsableMenu } from "@/lib/menuConfig";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const [userData, setUserData] = useState(() => {
     if (typeof window === "undefined") {
-      return { name: "Admin SAI", initials: "AS" };
+      return { name: "Admin SAI", initials: "AS", role: "ADMIN_SAI" };
     }
 
     const storedUser = localStorage.getItem("sai_user");
@@ -91,7 +30,6 @@ export default function Sidebar() {
       try {
         const user = JSON.parse(storedUser);
         const nameParts = user.name ? user.name.split(" ") : ["Admin", "SAI"];
-
         const initials =
           nameParts.length > 1
             ? `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase()
@@ -100,12 +38,13 @@ export default function Sidebar() {
         return {
           name: user.name || "Admin SAI",
           initials,
+          role: user.role,
         };
       } catch {
-        return { name: "Admin SAI", initials: "AS" };
+        return { name: "Admin SAI", initials: "AS", role: "ADMIN_SAI" };
       }
     }
-    return { name: "Admin SAI", initials: "AS" };
+    return { name: "Admin SAI", initials: "AS", role: "ADMIN_SAI" };
   });
 
   useEffect(() => {
@@ -128,7 +67,7 @@ export default function Sidebar() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("sai_token");
@@ -147,7 +86,6 @@ export default function Sidebar() {
 
     const x = e.clientX;
     const y = e.clientY;
-
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y),
@@ -176,6 +114,9 @@ export default function Sidebar() {
     });
   };
 
+  const currentMenu =
+    userData.role === "RESPONSABLE" ? responsableMenu : adminMenu;
+
   return (
     <aside className="w-70 h-screen bg-accent border-r border-border flex flex-col justify-between">
       <Link href={"/dashboard"}>
@@ -202,7 +143,7 @@ export default function Sidebar() {
       </Link>
 
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 no-scrollbar">
-        {menuSections.map((section, index) => (
+        {currentMenu.map((section, index) => (
           <div key={index}>
             {section.label && (
               <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3 px-3">

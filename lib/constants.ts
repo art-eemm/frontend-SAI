@@ -21,7 +21,6 @@ import {
   Map,
   MessageSquareQuote,
   Network,
-  Quote,
   Route,
   SearchCheck,
   Settings,

@@ -1,20 +1,35 @@
 "use client";
 
-import { useDashboardData } from "@/hooks/useDashboardData";
-import KpiGrid from "@/components/dashboard/KpiGrid";
-import RecentActivity from "@/components/dashboard/RecentActivity";
-import QuickAccess from "@/components/dashboard/QuickAccess";
+import { useEffect, useState } from "react";
+import AdminDashboard from "@/components/dashboard/AdminDashboard";
+import ResponsableDashboard from "@/components/dashboard/ResponsableDashboard";
 
 export default function DashboardPage() {
-  const { kpis, recentActivity, loading } = useDashboardData();
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <div className="min-h-screen bg-background">
-      <KpiGrid kpis={kpis} />
+  useEffect(() => {
+    const loadUserRole = async () => {
+      const storedUser = localStorage.getItem("sai_user");
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          setUserRole(user?.role || null);
+        } catch (error) {
+          console.error("Error parseando al usuario", error);
+        }
+      }
+      setIsLoading(false);
+    };
 
-      <RecentActivity data={recentActivity} isLoading={loading} />
+    loadUserRole();
+  }, []);
 
-      <QuickAccess />
-    </div>
-  );
+  if (isLoading) return null;
+
+  if (userRole === "RESPONSABLE") {
+    return <ResponsableDashboard />;
+  }
+
+  return <AdminDashboard />;
 }

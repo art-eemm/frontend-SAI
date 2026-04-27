@@ -32,7 +32,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Correo o conraseña incorrectos");
+        throw new Error(data.message || "Correo o contraseña incorrectos");
       }
 
       localStorage.setItem("sai_token", data.token);
@@ -41,7 +41,7 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Ocurrió un error inseperado",
+        err instanceof Error ? err.message : "Ocurrió un error inesperado",
       );
     } finally {
       setIsLoading(false);

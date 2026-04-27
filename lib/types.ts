@@ -1,4 +1,4 @@
-import { ElementType } from "react";
+import { ElementType, ReactNode } from "react";
 
 export interface ApiDocument {
   id: string;
@@ -45,6 +45,14 @@ export interface DashboardKpis {
   expired: number;
   myUploads: number;
 }
+
+export interface KpiCardData {
+  icon: ReactNode;
+  title: string;
+  value: string | number;
+  desc: string;
+}
+
 export interface User {
   name: string;
 }

@@ -9,13 +9,39 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { getFormattedName } from "@/lib/utils";
 
 export function CustomBreadcrumbs() {
   const pathname = usePathname();
   const segments = pathname.split("/").filter((item) => item !== "");
   const isDashboard = segments[0] === "dashboard";
+
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    const initializedBreadcrumbs = async () => {
+      const storedUser = localStorage.getItem("sai_user");
+      if (storedUser) {
+        try {
+          const user = JSON.parse(storedUser);
+          const rawRole = user?.role;
+          setUserRole(rawRole.trim().toUpperCase());
+        } catch (error) {
+          console.error("Error parseando usuario en breadcrumbs", error);
+        }
+      }
+      setIsMounted(true);
+    };
+    initializedBreadcrumbs();
+  }, []);
+
+  if (!isMounted) return null;
+
+  if (userRole === "RESPONSABLE") {
+    return null;
+  }
 
   return (
     <Breadcrumb className="mb-6">
