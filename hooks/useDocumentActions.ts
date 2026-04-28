@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  approveDocument,
+  publishSignedDocument,
+  rejectDocument,
+  sendDocumentToReview,
+} from "@/lib/services/documents";
 
 export function useDocumentActions(documentId: string | undefined) {
   const router = useRouter();
   const [updateFile, setUpdateFile] = useState<File | null>(null);
+  const [signedFile, setSignedFile] = useState<File | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [expYears, setExpYears] = useState("0");
   const [expMonths, setExpMonths] = useState("0");
@@ -12,6 +19,7 @@ export function useDocumentActions(documentId: string | undefined) {
 
   const resetForm = () => {
     setUpdateFile(null);
+    setSignedFile(null);
     setExpYears("0");
     setExpMonths("0");
     setVersion("0");
@@ -44,6 +52,119 @@ export function useDocumentActions(documentId: string | undefined) {
     } catch (error) {
       console.error("Fallo la descarga silenciosa:", error);
       window.open(fileUrl, "_blank");
+    }
+  };
+
+  const handleAction = async (
+    actionFn: () => Promise<unknown>,
+    successMsg: string,
+  ) => {
+    setIsUpdating(true);
+    const toastId = toast.loading("Procesando...");
+    try {
+      await actionFn();
+      toast.success(successMsg, { id: toastId });
+      router.refresh();
+      return true;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Ocurrió un error";
+      toast.error(msg, { id: toastId });
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleSendToReview = async () => {
+    if (!documentId) return;
+    return handleAction(
+      () => sendDocumentToReview(documentId),
+      "Enviando a revisión correctamente",
+    );
+  };
+
+  const handleUploadCorrection = async () => {
+    if (!updateFile || !documentId) return false;
+
+    const formData = new FormData();
+    formData.append("pdffile", updateFile);
+    formData.append("rev", version);
+
+    setIsUpdating(true);
+    const toastId = toast.loading(
+      "Subiendo corrección y notificando al SAI...",
+    );
+
+    try {
+      const token = localStorage.getItem("sai_token");
+      const res = await fetch(
+        `http://localhost:4000/api/documents/${documentId}/version`,
+        {
+          method: "POST",
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: formData,
+        },
+      );
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.error || "Error al subir la corrección");
+      }
+
+      toast.success("¡Corrección enviada a revisión con éxito!", {
+        id: toastId,
+      });
+      setUpdateFile(null);
+      router.refresh();
+      return true;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Error desconocido";
+      toast.error(msg, { id: toastId });
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const hanldeApprove = async () => {
+    if (!documentId) return;
+    return handleAction(
+      () => approveDocument(documentId),
+      "Documento aprovado para firma",
+    );
+  };
+
+  const handleReject = async (comments: string) => {
+    if (!documentId || !comments) return;
+    return handleAction(
+      () => rejectDocument(documentId, comments),
+      "Documento rechazado. Se notificó al responsable.",
+    );
+  };
+
+  const handlePublishSigned = async () => {
+    if (!signedFile || !documentId) return false;
+
+    const formData = new FormData();
+    formData.append("pdffile", signedFile);
+    formData.append("rev", version);
+
+    setIsUpdating(true);
+    const toastId = toast.loading("Publicando versión firmada...");
+    try {
+      await publishSignedDocument(documentId, formData);
+      toast.success("Documento vigente y publicado", { id: toastId });
+      resetForm();
+      router.refresh();
+      return true;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Error al publicar";
+      toast.error(msg, { id: toastId });
+      return false;
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -108,6 +229,8 @@ export function useDocumentActions(documentId: string | undefined) {
   return {
     updateFile,
     setUpdateFile,
+    signedFile,
+    setSignedFile,
     isUpdating,
     expYears,
     setExpYears,
@@ -118,5 +241,10 @@ export function useDocumentActions(documentId: string | undefined) {
     updateVersion,
     version,
     setVersion,
+    handleSendToReview,
+    handleUploadCorrection,
+    hanldeApprove,
+    handleReject,
+    handlePublishSigned,
   };
 }

@@ -19,11 +19,13 @@ export interface DocItem {
   estado: string;
   url: string;
   versiones: DocVersion[];
+  comentarioRechazo?: string;
 }
 
 export async function fetchDocuments(
   category?: string,
   dept?: string,
+  isPublicView: boolean = false,
 ): Promise<DocItem[]> {
   try {
     const res = await fetch("http://localhost:4000/api/documents", {
@@ -34,6 +36,10 @@ export async function fetchDocuments(
     const allDocs: ApiDocument[] = await res.json();
 
     let filteredDocs = allDocs;
+
+    if (isPublicView) {
+      filteredDocs = filteredDocs.filter((doc) => doc.status === "VIGENTE");
+    }
 
     if (category) {
       filteredDocs = filteredDocs.filter(
@@ -84,6 +90,7 @@ export async function fetchDocuments(
           revision: `${currentRevisionNumber}`,
           tipo: lastestVersion?.file_type || "PDF",
           estado: doc.status,
+          comentarioRechazo: (detail as any).latest_review,
           url: finalUrl,
           versiones: mappedVersions,
         };
@@ -143,5 +150,90 @@ export async function compareDocumentVersions(
     throw new Error(errorData?.error || "Error al comparar versiones");
   }
 
+  return res.json();
+}
+
+export async function sendDocumentToReview(
+  documentId: string,
+): Promise<Record<string, unknown>> {
+  const token = localStorage.getItem("sai_token");
+
+  const res = await fetch(
+    `http://localhost:4000/api/documents/${documentId}/send-to-review`,
+    {
+      method: "POST",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.error || "Error al enviar a revisión");
+  }
+  return res.json();
+}
+
+export async function approveDocument(documentId: string) {
+  const token = localStorage.getItem("sai_token");
+  const res = await fetch(
+    `http://localhost:4000/api/documents/${documentId}/approve`,
+    {
+      method: "POST",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.error || "Error al aprobar el documento");
+  }
+  return res.json();
+}
+
+export async function rejectDocument(documentId: string, comments: string) {
+  const token = localStorage.getItem("sai_token");
+  const res = await fetch(
+    `http://localhost:4000/api/documents/${documentId}/reject`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ comments }),
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.error || "Error al rechazar el documento");
+  }
+  return res.json();
+}
+
+export async function publishSignedDocument(
+  documentId: string,
+  formData: FormData,
+) {
+  const token = localStorage.getItem("sai_token");
+  const res = await fetch(
+    `http://localhost:4000/api/documents/${documentId}/publish-signed`,
+    {
+      method: "POST",
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    },
+  );
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null);
+    throw new Error(errorData?.error || "Error al publicar la versión firmada");
+  }
   return res.json();
 }

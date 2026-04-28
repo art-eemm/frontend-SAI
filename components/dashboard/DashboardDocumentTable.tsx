@@ -23,6 +23,7 @@ import {
 import dynamic from "next/dynamic";
 import { DocItem } from "@/lib/services/documents";
 import { DocumentDetailsSheet } from "./DocumentDetailsSheet";
+import { StatusBadge } from "../shared/StatusBadge";
 
 const DocumentViewer = dynamic(
   () => import("../shared/DocumentViewer").then((mod) => mod.DocumentViewer),
@@ -34,29 +35,29 @@ interface DashboardDocumentTableProps {
   data: DocItem[];
 }
 
-const getStatusBadge = (status: string) => {
-  const base = "px-2 py-[2px] text-[11px] font-medium rounded-md";
-  const formattedStatus = status;
+// const getStatusBadge = (status: string) => {
+//   const base = "px-2 py-[2px] text-[11px] font-medium rounded-md";
+//   const formattedStatus = status;
 
-  switch (formattedStatus) {
-    case "nuevo":
-      return <span className={`${base} bg-blue-100 text-blue-600`}>Nuevo</span>;
-    case "Vigente":
-      return (
-        <span className={`${base} bg-green-100 text-green-600`}>Vigente</span>
-      );
-    case "Vencido":
-      return <span className={`${base} bg-red-100 text-red-600`}>Vencido</span>;
-    case "Por vencer":
-      return (
-        <span className={`${base} bg-yellow-100 text-yellow-700`}>
-          Por vencer
-        </span>
-      );
-    default:
-      return <span>{status}</span>;
-  }
-};
+//   switch (formattedStatus) {
+//     case "nuevo":
+//       return <span className={`${base} bg-blue-100 text-blue-600`}>Nuevo</span>;
+//     case "Vigente":
+//       return (
+//         <span className={`${base} bg-green-100 text-green-600`}>Vigente</span>
+//       );
+//     case "Vencido":
+//       return <span className={`${base} bg-red-100 text-red-600`}>Vencido</span>;
+//     case "Por vencer":
+//       return (
+//         <span className={`${base} bg-yellow-100 text-yellow-700`}>
+//           Por vencer
+//         </span>
+//       );
+//     default:
+//       return <span>{status}</span>;
+//   }
+// };
 
 const getFileTypeColor = (tipo: string) => {
   const t = tipo?.toLowerCase() || "";
@@ -249,12 +250,8 @@ export default function DashboardDocumentTable({
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-center">
-                    {getStatusBadge(
-                      !doc.fechaVenc || doc.fechaVenc === "N/A"
-                        ? "Vigente"
-                        : doc.estado,
-                    )}
+                  <TableCell className="px-4 py-3 text-center text-xs">
+                    <StatusBadge status={doc.estado} />
                   </TableCell>
                   <TableCell className="px-4 py-3">
                     <div className="flez items-center justify-center gap-2">

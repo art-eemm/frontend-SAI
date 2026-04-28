@@ -34,7 +34,7 @@ export default async function CategoryPage({
   }
 
   if (currentModuleConfig.directCategories.includes(category.toLowerCase())) {
-    const tableData = await fetchDocuments(category);
+    const tableData = await fetchDocuments(category, undefined, true);
 
     return (
       <main className="max-w-7xl mx-auto px-4 py-10">
