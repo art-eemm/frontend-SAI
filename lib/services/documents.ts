@@ -28,9 +28,14 @@ export async function fetchDocuments(
   isPublicView: boolean = false,
 ): Promise<DocItem[]> {
   try {
-    const res = await fetch("http://localhost:4000/api/documents", {
-      cache: "no-store",
-    });
+    const timestamp = new Date().getTime();
+
+    const res = await fetch(
+      `http://localhost:4000/api/documents?_t=${timestamp}`,
+      {
+        cache: "no-store",
+      },
+    );
 
     if (!res.ok) throw new Error("Error al obtener los documentos");
     const allDocs: ApiDocument[] = await res.json();
@@ -56,7 +61,8 @@ export async function fetchDocuments(
     const enrichedDocs = await Promise.all(
       filteredDocs.map(async (doc: ApiDocument) => {
         const detailRes = await fetch(
-          `http://localhost:4000/api/documents/${doc.id}`,
+          `http://localhost:4000/api/documents/${doc.id}?_t=${timestamp}`,
+          { cache: "no-store" },
         );
         const detail: ApiDocumentDetail = await detailRes.json();
 

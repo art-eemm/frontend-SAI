@@ -7,36 +7,12 @@ import {
   TableRow,
 } from "../ui/table";
 import { RecentActivityItem } from "@/lib/types";
+import { StatusBadge } from "../shared/StatusBadge";
 
 interface RecentActivityProps {
   data: RecentActivityItem[];
   isLoading: boolean;
 }
-
-const getStatusBadge = (status: string) => {
-  const base = "px-2 py-[2px] text-[11px] font-medium rounded-md";
-  const formattedStatus =
-    status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-
-  switch (formattedStatus) {
-    case "Nuevo":
-      return <span className={`${base} bg-blue-100 text-blue-600`}>Nuevo</span>;
-    case "Vigente":
-      return (
-        <span className={`${base} bg-green-100 text-green-600`}>Vigente</span>
-      );
-    case "Vencido":
-      return <span className={`${base} bg-red-100 text-red-600`}>Vencido</span>;
-    case "Por vencer":
-      return (
-        <span className={`${base} bg-yellow-100 text-yellow-700`}>
-          Por vencer
-        </span>
-      );
-    default:
-      return <span>{status}</span>;
-  }
-};
 
 export default function RecentActivity({
   data,
@@ -72,7 +48,7 @@ export default function RecentActivity({
                       {row.name}
                     </h3>
                   </div>
-                  {getStatusBadge(row.status)}
+                  <StatusBadge status={row.status} />
                 </div>
 
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
@@ -134,7 +110,7 @@ export default function RecentActivity({
                         {row.user}
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
-                        {getStatusBadge(row.status)}
+                        <StatusBadge status={row.status} />
                       </TableCell>
                     </TableRow>
                   ))}

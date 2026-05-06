@@ -35,30 +35,6 @@ interface DashboardDocumentTableProps {
   data: DocItem[];
 }
 
-// const getStatusBadge = (status: string) => {
-//   const base = "px-2 py-[2px] text-[11px] font-medium rounded-md";
-//   const formattedStatus = status;
-
-//   switch (formattedStatus) {
-//     case "nuevo":
-//       return <span className={`${base} bg-blue-100 text-blue-600`}>Nuevo</span>;
-//     case "Vigente":
-//       return (
-//         <span className={`${base} bg-green-100 text-green-600`}>Vigente</span>
-//       );
-//     case "Vencido":
-//       return <span className={`${base} bg-red-100 text-red-600`}>Vencido</span>;
-//     case "Por vencer":
-//       return (
-//         <span className={`${base} bg-yellow-100 text-yellow-700`}>
-//           Por vencer
-//         </span>
-//       );
-//     default:
-//       return <span>{status}</span>;
-//   }
-// };
-
 const getFileTypeColor = (tipo: string) => {
   const t = tipo?.toLowerCase() || "";
   if (t.includes("pdf")) return "bg-red-500";
@@ -172,11 +148,9 @@ export default function DashboardDocumentTable({
               <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
                 Nombre
               </TableHead>
-              {/* <TableHead className="px-3 py-1 text-sm font-semibold text-foreground">
-                Fecha
-              </TableHead> */}
+
               <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
-                Fecha de vencimiento
+                Fecha de Expedición
               </TableHead>
               <TableHead className="px-3 py-1 text-sm font-semibold text-foreground text-center">
                 Versión
@@ -217,18 +191,10 @@ export default function DashboardDocumentTable({
                   <TableCell className="px-4 py-3 whitespace-nowrap">
                     {doc.nombre}
                   </TableCell>
-                  {/* <TableCell className="px-4 py-3 text-center whitespace-nowrap">
-                    {new Date(doc.fechaRev)
-                      .toLocaleDateString("es-MX", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })
-                      .replace(".", "")}
-                  </TableCell> */}
+
                   <TableCell className="px-4 py-3 text-center whitespace-nowrap">
-                    {doc.fechaVenc
-                      ? new Date(doc.fechaVenc)
+                    {doc.fechaRev
+                      ? new Date(doc.fechaRev)
                           .toLocaleDateString("es-MX", {
                             day: "2-digit",
                             month: "short",

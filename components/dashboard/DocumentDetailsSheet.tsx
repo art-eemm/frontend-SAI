@@ -71,9 +71,9 @@ export function DocumentDetailsSheet({
       <SheetContent className="w-full sm:max-w-md bg-background p-0 overflow-y-auto">
         <DocumentDetailsHeader document={document} />
 
-        <div className="p-6 space-y-6">
+        <div className="px-6 space-y-6">
           <div className="bg-muted/30 border border-border rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-foreground">
                 Estado del Flujo
               </h3>
@@ -193,7 +193,7 @@ export function DocumentDetailsSheet({
               </div>
             )}
 
-            {/* VISTA DEL RESPONSABLE: Subir Firmado Final */}
+            {/* Vista del responsable */}
             {isResponsable && document.estado === "APROBADO_SIN_FIRMA" && (
               <div className="space-y-3 pt-2 border-t border-border">
                 <p className="text-[11px] font-bold text-blue-800 uppercase">
@@ -251,7 +251,7 @@ export function DocumentDetailsSheet({
             </div>
           </div>
 
-          {/* FORMULARIO ESTÁNDAR: Solo se muestra si NO está en proceso de revisión/rechazo */}
+          {/* Formulario */}
           {showStandardUpdateForm && (
             <DocumentUpdateForm actions={actions} onSuccess={handleClose} />
           )}

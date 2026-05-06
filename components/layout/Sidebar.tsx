@@ -3,21 +3,40 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
 import { MoreVertical, LogOut, Moon, Sun } from "lucide-react";
 import { Switch } from "../ui/switch";
 import { adminMenu, responsableMenu } from "@/lib/menuConfig";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "../ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-export default function Sidebar() {
+export default function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
+  const { state } = useSidebar();
 
   const [mounted, setMounted] = useState(false);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const [userData, setUserData] = useState(() => {
     if (typeof window === "undefined") {
@@ -50,23 +69,6 @@ export default function Sidebar() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target as Node)
-      ) {
-        setShowProfileMenu(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   const handleLogout = () => {
@@ -118,126 +120,136 @@ export default function Sidebar() {
     userData.role === "RESPONSABLE" ? responsableMenu : adminMenu;
 
   return (
-    <aside className="w-70 h-screen bg-accent border-r border-border flex flex-col justify-between">
-      <Link href={"/dashboard"}>
-        <div className="flex items-center p-6 border-b-2 border-border">
-          <Image
-            src={"/images/DragonPropy.svg"}
-            alt="Logo SAI"
-            width={80}
-            height={40}
-            className="object-contain dark:hidden"
-            priority
-          />
-
-          <Image
-            src={"/images/DragonPropy_BlackMode.png"}
-            alt="Logo SAI"
-            width={80}
-            height={40}
-            className="object-contain hidden dark:block"
-            priority
-          />
-          <h1 className="text-5xl font-bold italic">SAI</h1>
-        </div>
-      </Link>
-
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6 no-scrollbar">
-        {currentMenu.map((section, index) => (
-          <div key={index}>
-            {section.label && (
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3 px-3">
-                {section.label}
-              </p>
-            )}
-
-            <div className="space-y-1">
-              {section.items.map((item) => {
-                const isActive =
-                  item.route === "/dashboard"
-                    ? pathname === item.route
-                    : pathname.startsWith(item.route);
-                const Icon = item.icon;
-
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.route}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2 rounded-lg text-[14px] transition-all",
-                      isActive
-                        ? "bg-brand-green font-medium"
-                        : "text-foreground hover:bg-background/50",
-                    )}
-                  >
-                    <Icon size={18} className="text-foreground" />
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </div>
+    <Sidebar collapsible="icon" className="border-r border-border bg-accent">
+      <SidebarHeader className="p-4 border-b-2 border-border">
+        <Link href={"/dashboard"} className="flex items-center gap-3">
+          <div className="shrink-0">
+            <Image
+              src={"/images/DragonPropy.svg"}
+              alt="Logo SAI"
+              width={state === "collapsed" ? 40 : 80}
+              height={40}
+              className="object-contain dark:hidden transition-all duration-200"
+              priority
+            />
+            <Image
+              src={"/images/DragonPropy_BlackMode.png"}
+              alt="Logo SAI"
+              width={state === "collapsed" ? 40 : 80}
+              height={40}
+              className="object-contain hidden dark:block transition-all duration-200"
+              priority
+            />
           </div>
-        ))}
-      </div>
-
-      <div className="border-t border-border p-4 bg-accent relative">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-foreground flex items-center justify-center text-sm font-semibold text-muted">
-              {userData.initials}
-            </div>
-
-            <span className="text-[14px] text-muted-foreground font-medium truncate">
-              {userData.name}
-            </span>
-          </div>
-
-          <MoreVertical
-            size={18}
-            onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="text-muted-foreground cursor-pointer"
-          />
-        </div>
-
-        <div ref={profileMenuRef}>
-          {showProfileMenu && (
-            <div className="absolute bottom-16 left-4 right-4 bg-accent border-2 border-border rounded-lg shadow-lg overflow-hidden">
-              <div className="w-full flex items-center justify-between px-4 py-3 hover:bg-background border-b border-border transition-colors">
-                <div className="text-sm text-foreground">
-                  {mounted && resolvedTheme === "dark" ? (
-                    <div className="flex gap-2 items-center">
-                      <Sun size={16} />
-                      Claro
-                    </div>
-                  ) : (
-                    <div className="flex gap-2 items-center">
-                      <Moon size={16} />
-                      Oscuro
-                    </div>
-                  )}
-                </div>
-
-                <Switch
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleThemeChange(e);
-                  }}
-                  checked={mounted && resolvedTheme === "dark"}
-                  className="cursor-pointer"
-                />
-              </div>
-
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-500 hover:bg-background cursor-pointer"
-              >
-                <LogOut size={16} />
-                Cerrar sesión
-              </button>
-            </div>
+          {state === "expanded" && (
+            <h1 className="text-4xl font-bold italic transition-opacity">
+              SAI
+            </h1>
           )}
-        </div>
-      </div>
-    </aside>
+        </Link>
+      </SidebarHeader>
+
+      <SidebarContent className="no-scrollbar">
+        {currentMenu.map((section, index) => (
+          <SidebarGroup key={index}>
+            {section.label && (
+              <SidebarGroupLabel className="text-xs uppercase text-muted-foreground font-semibold">
+                {section.label}
+              </SidebarGroupLabel>
+            )}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => {
+                  const isActive =
+                    item.route === "/dashboard"
+                      ? pathname === item.route
+                      : pathname.startsWith(item.route);
+
+                  const Icon = item.icon;
+
+                  return (
+                    <SidebarMenuItem key={item.name}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        tooltip={item.name}
+                        className={`transition-all mx-auto ${
+                          isActive
+                            ? "bg-brand-green/80! font-medium"
+                            : "hover:bg-background"
+                        }`}
+                      >
+                        <Link href={item.route}>
+                          <Icon />
+                          <span>{item.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+
+      <SidebarFooter className="border-t border-border p-2 bg-accent w-full">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size={"lg"}
+              className="w-full justify-between data-[state=open]:bg-background/50"
+            >
+              <div className="flex items-center gap-3 overflow-hidden">
+                <Avatar className="border">
+                  <AvatarFallback>{userData.initials}</AvatarFallback>
+                </Avatar>
+                {state === "expanded" && (
+                  <span className="text-sm text-muted-foreground font-medium truncate">
+                    {userData.name}
+                  </span>
+                )}
+              </div>
+              {state === "expanded" && (
+                <MoreVertical size={16} className="text-muted-foreground" />
+              )}
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            side="top"
+            align="end"
+            className="w-56 bg-accent border-2 border-border"
+          >
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              onClick={handleThemeChange}
+              className="flex justify-between items-center cursor-pointer py-3"
+            >
+              <div className="flex items-center gap-2 text-foreground">
+                {mounted && resolvedTheme === "dark" ? (
+                  <>
+                    <Sun size={16} /> Claro
+                  </>
+                ) : (
+                  <>
+                    <Moon size={16} /> Oscuro
+                  </>
+                )}
+              </div>
+              <Switch
+                checked={mounted && resolvedTheme === "dark"}
+                className="pointer-events-none"
+              />
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+              <LogOut size={16} className="mr-2" />
+              Cerrar sesión
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

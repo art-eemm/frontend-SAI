@@ -1,11 +1,10 @@
 "use client";
 
-import { Bell, Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import Sidebar from "../layout/Sidebar";
 import { usePathname } from "next/navigation";
 import { APP_CONFIG } from "@/lib/constants";
 import { useHeader } from "@/lib/contexts/HeaderContext";
+import { NotificationDropdown } from "../layout/NotificationDropdown";
+import { SidebarTrigger } from "../ui/sidebar";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -34,20 +33,7 @@ export default function DashboardHeader() {
   return (
     <div className="flex items-center justify-between border-b-2 border-border pb-4 mb-6">
       <div className="flex items-start gap-3">
-        <div className="lg:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
-              <button className="p-2 rounded-md hover:bg-accent transition">
-                <Menu size={20} />
-              </button>
-            </SheetTrigger>
-
-            <SheetContent side="left" className="w-70 p-0 bg-background">
-              <Sidebar />
-            </SheetContent>
-          </Sheet>
-        </div>
-
+        <SidebarTrigger className="shrink-0" size={"icon-lg"} />
         <div>
           <h1 className="text-md sm:text-lg font-semibold text-foreground">
             {displayTitle}
@@ -58,10 +44,7 @@ export default function DashboardHeader() {
         </div>
       </div>
 
-      <button className="relative p-2 rounded-full bg-background border border-border shadow-sm hover:cursor-pointer hover:bg-accent">
-        <Bell className="w-4 h-4 text-foreground" />
-        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-      </button>
+      <NotificationDropdown />
     </div>
   );
 }

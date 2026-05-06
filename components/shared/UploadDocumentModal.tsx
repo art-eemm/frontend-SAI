@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,12 +20,14 @@ interface UploadDocumentModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: string;
+  onSuccess: () => void;
 }
 
 export default function UploadDocumentModal({
   isOpen,
   onClose,
   category,
+  onSuccess,
 }: UploadDocumentModalProps) {
   const router = useRouter();
   const [procedencia, setProcedencia] = useState("");
@@ -35,6 +37,16 @@ export default function UploadDocumentModal({
   const [expYears, setExpYears] = useState("0");
   const [expMonths, setExpMonths] = useState("0");
   const [version, setVersion] = useState("0");
+
+  const CATEGORIAS_CON_VIGENCIA = [
+    "procedimientos",
+    "instructivos",
+    "complementarios",
+  ];
+
+  const permiteVigencia = CATEGORIAS_CON_VIGENCIA.includes(
+    category.toLowerCase(),
+  );
 
   const handleClose = () => {
     setProcedencia("");
@@ -63,8 +75,14 @@ export default function UploadDocumentModal({
       formData.append("category", category);
       formData.append("origin_code", procedencia.toUpperCase());
       formData.append("pdffile", file);
-      formData.append("expiration_years", expYears);
-      formData.append("expiration_months", expMonths);
+      formData.append(
+        "expiration_years",
+        permiteVigencia ? expYears || "0" : "0",
+      );
+      formData.append(
+        "expiration_months",
+        permiteVigencia ? expMonths || "0" : "0",
+      );
       formData.append("rev", version);
 
       await uploadNewDocument(formData);
@@ -73,8 +91,14 @@ export default function UploadDocumentModal({
         id: toastId,
       });
 
+      if (onSuccess) {
+        onSuccess();
+      }
+
       router.refresh();
-      handleClose();
+      setTimeout(() => {
+        handleClose();
+      }, 100);
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -177,29 +201,35 @@ export default function UploadDocumentModal({
             <div className="grid grid-cols-2 gap-3 rounded-md">
               <div className="col-span-2 grid grid-cols-2 gap-2">
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-muted-foreground">
+                  <Label
+                    className={`text-xs font-semibold ${permiteVigencia ? "text-muted-foreground" : "text-muted-foreground/50"}`}
+                  >
                     Vigencia (Años)
                   </Label>
                   <Input
                     type="number"
                     min="0"
-                    placeholder="AA"
-                    value={expYears}
+                    placeholder={permiteVigencia ? "AA" : "N/A"}
+                    value={permiteVigencia ? expYears : ""}
                     onChange={(e) => setExpYears(e.target.value)}
+                    disabled={!permiteVigencia}
                     className="bg-background h-9"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-muted-foreground">
+                  <Label
+                    className={`text-xs font-semibold ${permiteVigencia ? "text-muted-foreground" : "text-muted-foreground/50"}`}
+                  >
                     Vigencia (Meses)
                   </Label>
                   <Input
                     type="number"
                     min="0"
                     max="11"
-                    placeholder="MM"
-                    value={expMonths}
+                    placeholder={permiteVigencia ? "MM" : "N/A"}
+                    value={permiteVigencia ? expMonths : ""}
                     onChange={(e) => setExpMonths(e.target.value)}
+                    disabled={!permiteVigencia}
                     className="bg-background h-9"
                   />
                 </div>

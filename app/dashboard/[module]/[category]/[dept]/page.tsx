@@ -5,6 +5,8 @@ import { DepartmentItem } from "@/lib/types";
 import { fetchDocuments } from "@/lib/services/documents";
 import UploadDocumentButton from "@/components/shared/UploadDocumentButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardDepartmenPage({
   params,
 }: {
