@@ -20,6 +20,16 @@ export function useNotifications() {
 
   const prevUnreadCount = useRef(0);
 
+  const handleSessionExpired = () => {
+    localStorage.removeItem("sai_token");
+    localStorage.removeItem("sai_user");
+
+    if (window.location.pathname !== "/login") {
+      toast.error("Tu sesión ha expirado. Por favor, inicia sesión de nuevo.");
+      window.location.href = "/login";
+    }
+  };
+
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem("sai_token");
@@ -31,6 +41,11 @@ export function useNotifications() {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
+
+      if (res.status === 400 || res.status === 401) {
+        handleSessionExpired();
+        return;
+      }
 
       if (res.ok) {
         const data = await res.json();
@@ -63,13 +78,18 @@ export function useNotifications() {
   const markAsRead = async (id: number) => {
     try {
       const token = localStorage.getItem("sai_token");
-      await fetch(
+      const res = await fetch(
         `http://localhost:4000/api/documents/notifications/${id}/read`,
         {
           method: "PUT",
           headers: { Authorization: `Bearer ${token}` },
         },
       );
+
+      if (res.status === 400 || res.status === 401) {
+        handleSessionExpired();
+        return;
+      }
 
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
@@ -93,6 +113,11 @@ export function useNotifications() {
           },
         },
       );
+
+      if (res.status === 400 || res.status === 401) {
+        handleSessionExpired();
+        return;
+      }
 
       if (res.ok) {
         setNotifications([]);

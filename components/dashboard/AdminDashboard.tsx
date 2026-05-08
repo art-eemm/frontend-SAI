@@ -7,7 +7,7 @@ import QuickAccess from "@/components/dashboard/QuickAccess";
 import { FileText, Calendar, UploadCloud, AlertCircle } from "lucide-react";
 
 export default function AdminDashboard() {
-  const { kpis, recentActivity, loading } = useDashboardData();
+  const { kpis, recentActivity, loading, documents } = useDashboardData();
 
   const adminKpis = [
     {
@@ -37,12 +37,12 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background">
       <KpiGrid items={adminKpis} />
 
       <RecentActivity data={recentActivity} isLoading={loading} />
 
-      <QuickAccess />
+      <QuickAccess documents={documents} loading={loading} />
     </div>
   );
 }

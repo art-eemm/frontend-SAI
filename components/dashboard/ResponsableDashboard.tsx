@@ -40,7 +40,7 @@ export default function ResponsableDashboard() {
     },
     {
       title: "Pendientes de revisión",
-      value: loading ? "-" : kpis.expired.toString(),
+      value: loading ? "-" : kpis.myUploads.toString(),
       icon: <Clock className="w-4 h-4 text-yellow-500" />,
       desc: "documentos en espera",
     },

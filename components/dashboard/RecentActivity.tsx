@@ -53,11 +53,11 @@ export default function RecentActivity({
 
                 <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
                   <div>
-                    <span className="text-muted-foreground">Fecha</span>
+                    <span className="text-muted-foreground">Publicado</span>
                     <p>{row.date}</p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Rev.</span>
+                    <span className="text-muted-foreground">Versión</span>
                     <p>{row.rev}</p>
                   </div>
                 </div>
@@ -77,7 +77,7 @@ export default function RecentActivity({
                       Nombre
                     </TableHead>
                     <TableHead className="text-sm font-bold whitespace-nowrap">
-                      Fecha
+                      Publicado
                     </TableHead>
                     <TableHead className="text-sm font-bold whitespace-nowrap">
                       Versión

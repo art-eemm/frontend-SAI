@@ -21,6 +21,8 @@ import {
   ChevronsRight,
 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { DocumentFilterDropdown } from "./DocumentFilterDropdown";
+import { DocumentFilterState, defaultFilterState } from "@/lib/types";
 
 const DocumentViewer = dynamic(
   () => import("./DocumentViewer").then((mod) => mod.DocumentViewer),
@@ -66,22 +68,66 @@ export default function DocumentTable({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const filteredData = data.filter((doc) => {
+  const [filters, setFilters] =
+    useState<DocumentFilterState>(defaultFilterState);
+
+  // const filteredData = data.filter((doc) => {
+  //   const searchLower = searchTerm.toLowerCase();
+  //   return (
+  //     doc.nombre.toLowerCase().includes(searchLower) ||
+  //     doc.procedencia.toLowerCase().includes(searchLower) ||
+  //     doc.tipo.toLowerCase().includes(searchLower)
+  //   );
+  // });
+
+  const processedData = data.filter((doc) => {
     const searchLower = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
       doc.nombre.toLowerCase().includes(searchLower) ||
-      doc.procedencia.toLowerCase().includes(searchLower) ||
-      doc.tipo.toLowerCase().includes(searchLower)
-    );
+      doc.procedencia.toLowerCase().includes(searchLower);
+
+    // const matchesStatus =
+    //   filters.status === "ALL" ||
+    //   (doc.estado && doc.estado.toUpperCase() === filters.status);
+
+    const docType = doc.tipo?.toUpperCase() || "";
+    let matchesType = true;
+    if (filters.type === "PDF") matchesType = docType.includes("PDF");
+    if (filters.type === "WORD")
+      matchesType = docType.includes("DOC") || docType.includes("WORD");
+    if (filters.type === "EXCEL")
+      matchesType = docType.includes("XLS") || docType.includes("EXCEL");
+
+    return matchesSearch && matchesType;
   });
 
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  processedData.sort((a, b) => {
+    if (filters.sort === "newest") {
+      return (
+        new Date(b.fechaRev || 0).getTime() -
+        new Date(a.fechaRev || 0).getTime()
+      );
+    }
+    if (filters.sort === "oldest") {
+      return (
+        new Date(a.fechaRev || 0).getTime() -
+        new Date(b.fechaRev || 0).getTime()
+      );
+    }
+    if (filters.sort === "name-asc") {
+      return a.nombre.localeCompare(b.nombre);
+    }
+    if (filters.sort === "name-desc") {
+      return b.nombre.localeCompare(a.nombre);
+    }
+    return 0;
+  });
 
+  const totalItems = processedData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const currentData = processedData.slice(startIndex, endIndex);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -105,10 +151,11 @@ export default function DocumentTable({
               onChange={handleSearch}
             />
           </div>
-          <Button variant={"outline"} className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4" />
-            Filtro
-          </Button>
+          <DocumentFilterDropdown
+            filters={filters}
+            setFilters={setFilters}
+            showStatusFilter={false}
+          />
         </div>
       </div>
 
@@ -124,7 +171,7 @@ export default function DocumentTable({
                 Nombre
               </TableHead>
               <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
-                Fecha de Rev.
+                Fecha de Expedición
               </TableHead>
               <TableHead className="px-6 py-4 font-semibold text-foreground text-center">
                 Versión
@@ -150,7 +197,7 @@ export default function DocumentTable({
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((doc) => (
+              currentData.map((doc) => (
                 <TableRow key={doc.id} className="text-muted-foreground">
                   <TableCell className="px-6 py-4 font-medium text-foreground">
                     {doc.procedencia}

@@ -5,6 +5,12 @@ import { APP_CONFIG } from "@/lib/constants";
 import { useHeader } from "@/lib/contexts/HeaderContext";
 import { NotificationDropdown } from "../layout/NotificationDropdown";
 import { SidebarTrigger } from "../ui/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export default function DashboardHeader() {
   const pathname = usePathname();
@@ -33,7 +39,20 @@ export default function DashboardHeader() {
   return (
     <div className="flex items-center justify-between border-b-2 border-border pb-4 mb-6">
       <div className="flex items-start gap-3">
-        <SidebarTrigger className="shrink-0" size={"icon-lg"} />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <SidebarTrigger
+                className="shrink-0 cursor-e-resize"
+                size={"icon-lg"}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Barra lateral</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <div>
           <h1 className="text-md sm:text-lg font-semibold text-foreground">
             {displayTitle}

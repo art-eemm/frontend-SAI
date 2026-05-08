@@ -1,5 +1,19 @@
 import { ElementType, ReactNode } from "react";
 
+export type SortOption = "newest" | "oldest" | "name-asc" | "name-desc";
+
+export interface DocumentFilterState {
+  sort: SortOption;
+  status: string;
+  type: string;
+}
+
+export const defaultFilterState: DocumentFilterState = {
+  sort: "newest",
+  status: "ALL",
+  type: "ALL",
+};
+
 export interface ApiDocument {
   id: string;
   origin_code: string;

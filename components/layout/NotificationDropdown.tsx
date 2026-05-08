@@ -75,7 +75,7 @@ export function NotificationDropdown() {
           </span>
         </div>
 
-        <div className="max-h-[350px] overflow-y-auto">
+        <div className="max-h-[350px] overflow-y-auto no-scrollbar">
           {notifications.length === 0 ? (
             <div className="p-6 text-center text-muted-foreground text-sm flex flex-col items-center">
               <Bell className="w-8 h-8 text-muted-foreground/50 mb-2" />
@@ -117,23 +117,23 @@ export function NotificationDropdown() {
                   )}
                 </DropdownMenuItem>
               ))}
-              {notifications.length > 0 && (
-                <div className="p-1 mt-1">
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      clearAll();
-                    }}
-                    className="w-full flex items-center justify-center px-2 py-2 text-xs font-medium text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-sm transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 mr-2" />
-                    Limpiar todo
-                  </button>
-                </div>
-              )}
             </div>
           )}
         </div>
+        {notifications.length > 0 && (
+          <div className="">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                clearAll();
+              }}
+              className="w-full flex items-center justify-center px-2 py-2 text-xs font-medium text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-sm transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5 mr-2" />
+              Limpiar todo
+            </button>
+          </div>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

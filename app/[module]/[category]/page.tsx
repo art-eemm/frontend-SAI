@@ -5,6 +5,9 @@ import { APP_CONFIG } from "@/lib/constants";
 import { getFormattedName } from "@/lib/utils";
 import { fetchDocuments } from "@/lib/services/documents";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function CategoryPage({
   params,
 }: {

@@ -1,5 +1,9 @@
 import { ApiDocument, ApiDocumentDetail } from "../types";
 
+export interface ApiDocumentDetailWithReview extends ApiDocumentDetail {
+  latest_review?: string;
+}
+
 export interface DocVersion {
   revision: string | number;
   fecha: string;
@@ -28,14 +32,10 @@ export async function fetchDocuments(
   isPublicView: boolean = false,
 ): Promise<DocItem[]> {
   try {
-    const timestamp = new Date().getTime();
-
-    const res = await fetch(
-      `http://localhost:4000/api/documents?_t=${timestamp}`,
-      {
-        cache: "no-store",
-      },
-    );
+    const res = await fetch(`http://localhost:4000/api/documents`, {
+      cache: "no-store",
+      next: { tags: ["documents-list"] },
+    });
 
     if (!res.ok) throw new Error("Error al obtener los documentos");
     const allDocs: ApiDocument[] = await res.json();
@@ -61,7 +61,7 @@ export async function fetchDocuments(
     const enrichedDocs = await Promise.all(
       filteredDocs.map(async (doc: ApiDocument) => {
         const detailRes = await fetch(
-          `http://localhost:4000/api/documents/${doc.id}?_t=${timestamp}`,
+          `http://localhost:4000/api/documents/${doc.id}`,
           { cache: "no-store" },
         );
         const detail: ApiDocumentDetail = await detailRes.json();

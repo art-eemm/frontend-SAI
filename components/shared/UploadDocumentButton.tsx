@@ -7,10 +7,12 @@ import UploadDocumentModal from "./UploadDocumentModal";
 
 interface UploadDocumentButtonProps {
   category: string;
+  onSuccess?: () => void;
 }
 
 export default function UploadDocumentButton({
   category,
+  onSuccess,
 }: UploadDocumentButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,6 +30,7 @@ export default function UploadDocumentButton({
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         category={category}
+        onSuccess={onSuccess}
       />
     </>
   );

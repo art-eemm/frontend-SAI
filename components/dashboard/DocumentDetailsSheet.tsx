@@ -73,7 +73,7 @@ export function DocumentDetailsSheet({
 
         <div className="px-6 space-y-6">
           <div className="bg-muted/30 border border-border rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-semibold text-foreground">
                 Estado del Flujo
               </h3>
@@ -97,7 +97,7 @@ export function DocumentDetailsSheet({
                       onClick={() => setShowRejectInput(true)}
                       disabled={actions.isUpdating}
                     >
-                      <XCircle className="w-4 h-4" /> Rechazar / Observaciones
+                      <XCircle className="w-4 h-4" /> Rechazar
                     </Button>
                   </div>
                 ) : (

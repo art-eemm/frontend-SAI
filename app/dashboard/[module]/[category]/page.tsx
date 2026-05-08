@@ -22,7 +22,8 @@ export default function DashboardCategoryPage({
   const currentModule = APP_CONFIG[moduleSlug];
 
   const { setHeaderState, resetHeader } = useHeader();
-  const { documents, loading, userRole } = useCategoryDocuments(categorySlug);
+  const { documents, loading, userRole, refetch } =
+    useCategoryDocuments(categorySlug);
 
   const currentCategory = currentModule.options.find(
     (opt) => opt.href.split("/").pop() === categorySlug,
@@ -72,6 +73,7 @@ export default function DashboardCategoryPage({
         {isDirectCategory && (
           <UploadDocumentButton
             category={currentCategory?.title || categorySlug}
+            onSuccess={refetch}
           />
         )}
       </div>

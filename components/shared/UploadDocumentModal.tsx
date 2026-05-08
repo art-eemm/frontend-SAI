@@ -15,12 +15,13 @@ import { toast } from "sonner";
 import { uploadNewDocument } from "@/lib/services/documents";
 import { Label } from "../ui/label";
 import FileUploadDropzone from "./FileUploadDropzone";
+import { refreshDocumentsCache } from "@/lib/actions";
 
 interface UploadDocumentModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: string;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 }
 
 export default function UploadDocumentModal({
@@ -95,10 +96,9 @@ export default function UploadDocumentModal({
         onSuccess();
       }
 
-      router.refresh();
-      setTimeout(() => {
-        handleClose();
-      }, 100);
+      await refreshDocumentsCache();
+
+      handleClose();
     } catch (error) {
       const errorMessage =
         error instanceof Error

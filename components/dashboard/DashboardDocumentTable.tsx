@@ -16,7 +16,6 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
-  SlidersHorizontal,
   Eye,
   Download,
 } from "lucide-react";
@@ -24,6 +23,8 @@ import dynamic from "next/dynamic";
 import { DocItem } from "@/lib/services/documents";
 import { DocumentDetailsSheet } from "./DocumentDetailsSheet";
 import { StatusBadge } from "../shared/StatusBadge";
+import { DocumentFilterDropdown } from "../shared/DocumentFilterDropdown";
+import { DocumentFilterState, defaultFilterState } from "@/lib/types";
 
 const DocumentViewer = dynamic(
   () => import("../shared/DocumentViewer").then((mod) => mod.DocumentViewer),
@@ -95,19 +96,57 @@ export default function DashboardDocumentTable({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const filteredData = data.filter((doc) => {
+  const [filters, setFilters] =
+    useState<DocumentFilterState>(defaultFilterState);
+
+  const processedData = data.filter((doc) => {
     const searchLower = searchTerm.toLowerCase();
-    return (
+    const matchesSearch =
       doc.nombre.toLowerCase().includes(searchLower) ||
-      doc.procedencia.toLowerCase().includes(searchLower)
-    );
+      doc.procedencia.toLowerCase().includes(searchLower);
+
+    const matchesStatus =
+      filters.status === "ALL" ||
+      (doc.estado && doc.estado.toUpperCase() === filters.status);
+
+    const docType = doc.tipo?.toUpperCase() || "";
+    let matchesType = true;
+    if (filters.type === "PDF") matchesType = docType.includes("PDF");
+    if (filters.type === "WORD")
+      matchesType = docType.includes("DOC") || docType.includes("WORD");
+    if (filters.type === "EXCEL")
+      matchesType = docType.includes("XLS") || docType.includes("EXCEL");
+
+    return matchesSearch && matchesStatus && matchesType;
   });
 
-  const totalItems = filteredData.length;
+  processedData.sort((a, b) => {
+    if (filters.sort === "newest") {
+      return (
+        new Date(b.fechaRev || 0).getTime() -
+        new Date(a.fechaRev || 0).getTime()
+      );
+    }
+    if (filters.sort === "oldest") {
+      return (
+        new Date(a.fechaRev || 0).getTime() -
+        new Date(b.fechaRev || 0).getTime()
+      );
+    }
+    if (filters.sort === "name-asc") {
+      return a.nombre.localeCompare(b.nombre);
+    }
+    if (filters.sort === "name-desc") {
+      return b.nombre.localeCompare(a.nombre);
+    }
+    return 0;
+  });
+
+  const totalItems = processedData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const currentData = processedData.slice(startIndex, endIndex);
 
   return (
     <div className="bg-accent border-2 border-border rounded-lg p-4">
@@ -127,13 +166,8 @@ export default function DashboardDocumentTable({
               }}
             />
           </div>
-          <Button
-            variant={"secondary"}
-            className="flex items-center gap-2 cursor-pointer border border-border"
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            Filtro
-          </Button>
+
+          <DocumentFilterDropdown filters={filters} setFilters={setFilters} />
         </div>
       </div>
 
@@ -220,7 +254,7 @@ export default function DashboardDocumentTable({
                     <StatusBadge status={doc.estado} />
                   </TableCell>
                   <TableCell className="px-4 py-3">
-                    <div className="flez items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-2">
                       <Button
                         variant={"ghost"}
                         size={"icon"}

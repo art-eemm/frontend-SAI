@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DocItem, fetchDocuments } from "@/lib/services/documents";
 
 export const useCategoryDocuments = (categorySlug: string) => {
   const [documents, setDocuments] = useState<DocItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const refetch = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -55,7 +60,7 @@ export const useCategoryDocuments = (categorySlug: string) => {
     };
 
     loadData();
-  }, [categorySlug]);
+  }, [categorySlug, refreshTrigger]);
 
-  return { documents, loading, userRole };
+  return { documents, loading, userRole, refetch };
 };

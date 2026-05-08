@@ -86,7 +86,7 @@ export const responsableMenu = [
       },
       {
         name: "Indicadores",
-        route: "/dashboard/documentacion/instructivos",
+        route: "/dashboard/indicadores",
         icon: TrendingUp,
       },
     ],

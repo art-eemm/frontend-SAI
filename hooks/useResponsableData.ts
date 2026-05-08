@@ -59,12 +59,16 @@ export const useResponsableData = () => {
           (doc) => doc.status && doc.status.toLowerCase() === "vencido",
         ).length;
 
-        // Corregir el estado de los archivos
+        const pendientes = deptDocuments.filter((doc) => {
+          const status = doc.status?.toUpperCase() || "";
+          return status === "EN_REVISION" || status === "CON_OBSERVACIONES";
+        }).length;
+
         setKpis({
           total: totalDocs,
           recents: actualizados,
           expired: vencidos,
-          myUploads: vencidos,
+          myUploads: pendientes,
         });
 
         const sortedDocs = [...deptDocuments].sort(
@@ -106,7 +110,7 @@ export const useResponsableData = () => {
             const dateObj = new Date(doc.created_at);
             const formattedDate = !isNaN(dateObj.getTime())
               ? dateObj
-                  .toLocaleDateString("es-Mx", {
+                  .toLocaleDateString("es-MX", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",

@@ -4,6 +4,9 @@ import { APP_CONFIG } from "@/lib/constants";
 import { DepartmentItem } from "@/lib/types";
 import { fetchDocuments } from "@/lib/services/documents";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DepartmentPage({
   params,
 }: {
